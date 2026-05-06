@@ -877,26 +877,16 @@ async function signInGoogle() {
 }
 
 // Handle redirect result on page load
-async function handleRedirectResult() {
-  loader(true);
-  try {
-    const result = await auth.getRedirectResult();
-    if (result && result.user) {
-      CU        = result.user;
-      const doc = await db.collection("users").doc(CU.uid).get();
-      if (doc.exists && doc.data().onboardingComplete) {
-        PROFILE = doc.data();
-        loadDash();
-      } else {
-        show("s-onboard");
-        renderQ(0);
-      }
-    }
-  } catch (err) {
-    console.error(err);
-    toast("Sign-in failed. Please try again.");
+async function handleUser(user) {
+  CU = user;
+  const doc = await db.collection("users").doc(user.uid).get();
+  if (doc.exists && doc.data().onboardingComplete) {
+    PROFILE = doc.data();
+    loadDash();
+  } else {
+    show("s-onboard");
+    renderQ(0);
   }
-  loader(false);
 }
 
 async function doLogout() {
@@ -906,23 +896,26 @@ async function doLogout() {
   document.getElementById("bottom-nav").style.display = "none";
 }
 
-// First check for redirect result, then listen for auth state
-handleRedirectResult().then(() => {
-  auth.onAuthStateChanged(async user => {
-    if (user && !CU) {
-      CU        = user;
-      const doc = await db.collection("users").doc(user.uid).get();
-      if (doc.exists && doc.data().onboardingComplete) {
-        PROFILE = doc.data();
-        loadDash();
-      } else {
-        show("s-onboard");
-        renderQ(0);
+// App initialisation — splash shows for 2s then auth check
+window.addEventListener("load", () => {
+  setTimeout(async () => {
+    try {
+      const result = await auth.getRedirectResult();
+      if (result && result.user) {
+        await handleUser(result.user);
+        return;
       }
-    } else if (!user) {
-      setTimeout(() => show("s-auth"), 2200);
+    } catch (err) {
+      console.error("Redirect error:", err);
     }
-  });
+    auth.onAuthStateChanged(async user => {
+      if (user) {
+        await handleUser(user);
+      } else {
+        show("s-auth");
+      }
+    });
+  }, 2000);
 });
 
 /* ════════════════════════════════════════════════════════
