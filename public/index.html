@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#C44B9B" />
   <title>ShapeHer 🌸</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     /* ─── Reset & Base ─── */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -45,7 +45,25 @@
       --blue:       #2196F3;
     }
 
-    /* ─── Screens ─── */
+    /* ─── Bilingual Typography ─── */
+    .ne {
+      font-family: 'Noto Sans Devanagari', serif;
+      display: block;
+      line-height: 1.5;
+    }
+    .en {
+      font-family: 'Poppins', sans-serif;
+      display: block;
+      opacity: 0.72;
+      font-size: 0.88em;
+      line-height: 1.45;
+      margin-top: 1px;
+    }
+    /* Inline bilingual (for short labels) */
+    .ne-inline { font-family: 'Noto Sans Devanagari', serif; }
+    .en-inline { font-family: 'Poppins', sans-serif; opacity: 0.7; font-size: 0.85em; }
+    /* Divider between NE and EN lines */
+    .bilingual { display: flex; flex-direction: column; gap: 0; }
     .screen { display: none; width: 100%; min-height: 100vh; flex-direction: column; }
     .screen.active { display: flex; }
 
@@ -515,31 +533,43 @@
       <line x1="136" y1="140" x2="128" y2="164" stroke="#388E3C" stroke-width="1.5" stroke-linecap="round"/>
     </svg>
     <div class="auth-logo">Shape<span>Her</span></div>
-    <div class="auth-headline">Welcome, beautiful 🌸</div>
-    <div class="auth-sub">Your personalized Nepali diet plan — built around your real life, not a ChatGPT PDF.</div>
+    <div class="auth-headline"><span class="ne-inline">स्वागत छ, सुन्दरी 🌸</span></div>
+    <div class="auth-sub bilingual">
+      <span class="ne" style="font-size:14px;">तपाईंको व्यक्तिगत नेपाली आहार योजना — तपाईंको वास्तविक जीवनको आधारमा बनाइएको।</span>
+      <span class="en">Your personalized Nepali diet plan — built around your real life, not a generic PDF.</span>
+    </div>
 
     <!-- Tab toggle -->
     <div id="auth-tabs" style="display:flex;gap:0;width:100%;margin-bottom:20px;border:2px solid var(--border);border-radius:14px;overflow:hidden;">
-      <button id="tab-new" onclick="authTab('new')" style="flex:1;padding:12px;background:var(--grad);color:#fff;border:none;font-family:'Poppins',sans-serif;font-size:14px;font-weight:700;cursor:pointer;">New User</button>
-      <button id="tab-existing" onclick="authTab('existing')" style="flex:1;padding:12px;background:transparent;color:var(--soft);border:none;font-family:'Poppins',sans-serif;font-size:14px;font-weight:600;cursor:pointer;">Returning User</button>
+      <button id="tab-new" onclick="authTab('new')" style="flex:1;padding:12px;background:var(--grad);color:#fff;border:none;font-family:'Noto Sans Devanagari',serif;font-size:14px;font-weight:700;cursor:pointer;">नयाँ प्रयोगकर्ता<br><span style="font-family:'Poppins',sans-serif;font-size:11px;opacity:0.85;font-weight:400;">New User</span></button>
+      <button id="tab-existing" onclick="authTab('existing')" style="flex:1;padding:12px;background:transparent;color:var(--soft);border:none;font-family:'Noto Sans Devanagari',serif;font-size:14px;font-weight:600;cursor:pointer;">फर्कने प्रयोगकर्ता<br><span style="font-family:'Poppins',sans-serif;font-size:11px;font-weight:400;">Returning User</span></button>
     </div>
 
     <!-- New user panel -->
     <div id="auth-new" style="width:100%;">
-      <input class="field" id="auth-name-new" type="text" placeholder="Your name (e.g. Sita)" style="margin-bottom:12px;" />
-      <input class="field" id="auth-pin-new" type="password" inputmode="numeric" maxlength="4" placeholder="Create a 4-digit PIN" style="margin-bottom:12px;" />
-      <input class="field" id="auth-pin-confirm" type="password" inputmode="numeric" maxlength="4" placeholder="Confirm PIN" style="margin-bottom:16px;" />
-      <button class="btn-next" style="width:100%;height:52px;border-radius:14px;" onclick="signUpLocal()">Get Started 🌸</button>
+      <input class="field" id="auth-name-new" type="text" placeholder="तपाईंको नाम (जस्तै: सीता)" style="margin-bottom:12px;" />
+      <input class="field" id="auth-pin-new" type="password" inputmode="numeric" maxlength="4" placeholder="४ अंकको PIN बनाउनुस्" style="margin-bottom:12px;" />
+      <input class="field" id="auth-pin-confirm" type="password" inputmode="numeric" maxlength="4" placeholder="PIN पुनः लेख्नुस्" style="margin-bottom:16px;" />
+      <button class="btn-next" style="width:100%;height:52px;border-radius:14px;" onclick="signUpLocal()">
+        <span class="ne-inline" style="color:#fff;font-size:16px;">सुरु गरौं 🌸</span>
+        <span class="en-inline" style="color:rgba(255,255,255,0.85);font-size:12px;display:block;">Get Started</span>
+      </button>
     </div>
 
     <!-- Existing user panel -->
     <div id="auth-existing" style="width:100%;display:none;">
-      <input class="field" id="auth-name-ex" type="text" placeholder="Your name" style="margin-bottom:12px;" />
-      <input class="field" id="auth-pin-ex" type="password" inputmode="numeric" maxlength="4" placeholder="Your 4-digit PIN" style="margin-bottom:16px;" />
-      <button class="btn-next" style="width:100%;height:52px;border-radius:14px;" onclick="signInLocal()">Continue →</button>
+      <input class="field" id="auth-name-ex" type="text" placeholder="तपाईंको नाम" style="margin-bottom:12px;" />
+      <input class="field" id="auth-pin-ex" type="password" inputmode="numeric" maxlength="4" placeholder="तपाईंको ४ अंकको PIN" style="margin-bottom:16px;" />
+      <button class="btn-next" style="width:100%;height:52px;border-radius:14px;" onclick="signInLocal()">
+        <span class="ne-inline" style="color:#fff;font-size:16px;">जारी राख्नुस् →</span>
+        <span class="en-inline" style="color:rgba(255,255,255,0.85);font-size:12px;display:block;">Continue</span>
+      </button>
     </div>
 
-    <div class="auth-note">Free forever. No account or email needed.<br/>Your data stays on this device &amp; our secure server.</div>
+    <div class="auth-note bilingual">
+      <span class="ne" style="font-size:11px;">निःशुल्क। इमेल वा खाता आवश्यक छैन। तपाईंको डेटा यो उपकरण र हाम्रो सर्भरमा सुरक्षित छ।</span>
+      <span class="en" style="font-size:11px;">Free forever. No account or email needed. Your data stays on this device &amp; our secure server.</span>
+    </div>
   </div>
 
   <!-- ═══════════ ONBOARDING ═══════════ -->
@@ -597,12 +627,18 @@
 
     <div class="sec-title">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2196F3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:6px"><path d="M12 2C6 9 4 13.5 4 16a8 8 0 0016 0c0-2.5-2-7-8-14z"/></svg>
-      Paani Goal / Water Goal
+      <span class="ne-inline">पानी</span> <span class="en-inline">/ Water Goal</span>
     </div>
     <div class="water-card">
       <div>
-        <div class="water-title" id="d-water-title">Aaj 8 glass paani piunu / Drink 8 glasses today</div>
-        <div class="water-sub">Khana agadi ek glass paani piyo — bhok ghataaucha</div>
+        <div class="water-title bilingual" id="d-water-title">
+          <span class="ne">आज ८ गिलास पानी पिउनुस्</span>
+          <span class="en">Drink 8 glasses of water today</span>
+        </div>
+        <div class="water-sub bilingual">
+          <span class="ne" style="font-size:11px;">खाना अघि एक गिलास पानी पिउनुस् — भोक घटाउँछ</span>
+          <span class="en" style="font-size:11px;">One glass before each meal reduces hunger naturally</span>
+        </div>
         <div class="water-tracker" id="water-tracker">
           <!-- rendered by JS -->
         </div>
@@ -611,7 +647,7 @@
 
     <div class="sec-title">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px"><path d="M3 6h18M3 12h18M3 18h7"/><circle cx="17" cy="17" r="4"/><path d="m19 15-3 3 1.5 1.5"/></svg>
-      Aajako Khaana / Today's Meal Plan
+      <span class="ne-inline">आजको खाना</span> <span class="en-inline">/ Today's Meal Plan</span>
     </div>
     <div id="d-meals"><!-- rendered --></div>
 
@@ -620,21 +656,27 @@
     <div class="sec-title" style="display:flex;align-items:center;justify-content:space-between;padding-right:24px;">
       <span>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-        Quick Log
+        <span class="ne-inline">छिटो लग</span> <span class="en-inline">/ Quick Log</span>
       </span>
-      <button onclick="testNotification()" style="background:var(--grad-soft);border:none;border-radius:10px;padding:6px 12px;font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;color:var(--pink);cursor:pointer;display:flex;align-items:center;gap:5px;">
+      <button onclick="testNotification()" style="background:var(--grad-soft);border:none;border-radius:10px;padding:6px 12px;font-size:11px;font-weight:600;color:var(--pink);cursor:pointer;display:flex;align-items:center;gap:5px;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-        Notifications
+        <span class="ne-inline" style="font-size:11px;">सूचना</span>
       </button>
     </div>
     <div class="qa-grid">
       <button class="qa-btn" onclick="show('s-meal')">
         <svg class="qa-art" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/></svg>
-        <div class="qa-lbl">Log Meal</div>
+        <div class="qa-lbl bilingual" style="text-align:center;">
+          <span class="ne" style="font-size:12px;">खाना लग</span>
+          <span class="en" style="font-size:10px;">Log Meal</span>
+        </div>
       </button>
       <button class="qa-btn" onclick="show('s-weight'); loadWChart()">
         <svg class="qa-art" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h18"/><circle cx="12" cy="12" r="3" fill="rgba(196,75,155,0.1)"/></svg>
-        <div class="qa-lbl">Log Weight</div>
+        <div class="qa-lbl bilingual" style="text-align:center;">
+          <span class="ne" style="font-size:12px;">तौल लग</span>
+          <span class="en" style="font-size:10px;">Log Weight</span>
+        </div>
       </button>
     </div>
   </div>
@@ -703,8 +745,14 @@
   <!-- ═══════════ PROGRESS ═══════════ -->
   <div id="s-progress" class="screen">
     <div class="prog-header">
-      <div class="prog-title">Tpaaiko Progress 📈</div>
-      <div class="prog-sub">Pratyek logged din ek jeet ho — jari raakha!</div>
+      <div class="prog-title bilingual">
+        <span class="ne" style="color:#fff;">तपाईंको प्रगति 📈</span>
+        <span class="en" style="color:rgba(255,255,255,0.8);font-size:13px;">Your Progress</span>
+      </div>
+      <div class="prog-sub bilingual">
+        <span class="ne" style="color:rgba(255,255,255,0.85);font-size:12px;">प्रत्येक लग गरिएको दिन एक जित हो — जारी राख्नुस्!</span>
+        <span class="en" style="color:rgba(255,255,255,0.7);font-size:11px;">Every logged day is a win — keep going!</span>
+      </div>
     </div>
     <div class="chart-card" style="margin:20px 24px;">
       <div class="chart-title">Weight Trend (Last 14 Days)</div>
@@ -724,17 +772,17 @@
 
     <div class="prof-section">
       <div class="prof-sec-title">Your Stats</div>
-      <div class="prof-row"><div class="prof-row-l"><span class="prof-row-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="3"/><path d="M6 21v-2a6 6 0 0112 0v2"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="9" y1="11" x2="15" y2="11"/></svg></span><span class="prof-row-lbl">Current Weight</span></div><span class="prof-row-val" id="p-cw">--</span></div>
-      <div class="prof-row"><div class="prof-row-l"><span class="prof-row-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></span><span class="prof-row-lbl">Goal Weight</span></div><span class="prof-row-val" id="p-gw">--</span></div>
-      <div class="prof-row"><div class="prof-row-l"><span class="prof-row-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2" stroke-linecap="round"><line x1="12" y1="2" x2="12" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></span><span class="prof-row-lbl">Height</span></div><span class="prof-row-val" id="p-ht">--</span></div>
-      <div class="prof-row"><div class="prof-row-l"><span class="prof-row-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2" stroke-linecap="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span><span class="prof-row-lbl">Health Conditions</span></div><span class="prof-row-val" id="p-cond">None</span></div>
+      <div class="prof-row"><div class="prof-row-l"><span class="prof-row-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="3"/><path d="M6 21v-2a6 6 0 0112 0v2"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="9" y1="11" x2="15" y2="11"/></svg></span><span class="prof-row-lbl"><span class="ne-inline">हालको तौल</span> <span class="en-inline">/ Current Weight</span></span></div><span class="prof-row-val" id="p-cw">--</span></div>
+      <div class="prof-row"><div class="prof-row-l"><span class="prof-row-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></span><span class="prof-row-lbl"><span class="ne-inline">लक्ष्य तौल</span> <span class="en-inline">/ Goal Weight</span></span></div><span class="prof-row-val" id="p-gw">--</span></div>
+      <div class="prof-row"><div class="prof-row-l"><span class="prof-row-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2" stroke-linecap="round"><line x1="12" y1="2" x2="12" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></span><span class="prof-row-lbl"><span class="ne-inline">उचाइ</span> <span class="en-inline">/ Height</span></span></div><span class="prof-row-val" id="p-ht">--</span></div>
+      <div class="prof-row"><div class="prof-row-l"><span class="prof-row-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2" stroke-linecap="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span><span class="prof-row-lbl"><span class="ne-inline">स्वास्थ्य अवस्था</span> <span class="en-inline">/ Health Conditions</span></span></div><span class="prof-row-val" id="p-cond">None</span></div>
     </div>
 
     <div class="prof-section">
       <div class="prof-sec-title">Plan Details</div>
-      <div class="prof-row"><div class="prof-row-l"><span class="prof-row-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2" stroke-linecap="round"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2z"/><path d="M12 8v4l3 3"/></svg></span><span class="prof-row-lbl">Diet Type</span></div><span class="prof-row-val" id="p-diet">--</span></div>
-      <div class="prof-row"><div class="prof-row-l"><span class="prof-row-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2" stroke-linecap="round"><path d="M12 2C6 9 4 13.5 4 16a8 8 0 0016 0c0-2.5-2-7-8-14z"/></svg></span><span class="prof-row-lbl">Daily Water Goal</span></div><span class="prof-row-val">8 glasses</span></div>
-      <div class="prof-row"><div class="prof-row-l"><span class="prof-row-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2" stroke-linecap="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></span><span class="prof-row-lbl">Target Loss / Week</span></div><span class="prof-row-val">0.5 – 1 kg</span></div>
+      <div class="prof-row"><div class="prof-row-l"><span class="prof-row-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2" stroke-linecap="round"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2z"/><path d="M12 8v4l3 3"/></svg></span><span class="prof-row-lbl"><span class="ne-inline">आहार प्रकार</span> <span class="en-inline">/ Diet Type</span></span></div><span class="prof-row-val" id="p-diet">--</span></div>
+      <div class="prof-row"><div class="prof-row-l"><span class="prof-row-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2" stroke-linecap="round"><path d="M12 2C6 9 4 13.5 4 16a8 8 0 0016 0c0-2.5-2-7-8-14z"/></svg></span><span class="prof-row-lbl"><span class="ne-inline">दैनिक पानी लक्ष्य</span> <span class="en-inline">/ Daily Water Goal</span></span></div><span class="prof-row-val">८ गिलास / 8 glasses</span></div>
+      <div class="prof-row"><div class="prof-row-l"><span class="prof-row-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2" stroke-linecap="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></span><span class="prof-row-lbl"><span class="ne-inline">हप्ताको लक्ष्य</span> <span class="en-inline">/ Target Loss / Week</span></span></div><span class="prof-row-val">०.५–१ kg</span></div>
     </div>
 
     <button class="btn-logout" onclick="doLogout()">Sign Out</button>
@@ -747,19 +795,19 @@
         <svg class="nav-art" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/>
         </svg>
-        <span class="nav-lbl">Home</span>
+        <span class="nav-lbl"><span class="ne-inline" style="font-size:9px;">गृहपृष्ठ</span></span>
       </button>
       <button class="nav-btn" id="nb-prog" onclick="switchTab('s-progress','nb-prog'); loadProgress()">
         <svg class="nav-art" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
         </svg>
-        <span class="nav-lbl">Progress</span>
+        <span class="nav-lbl"><span class="ne-inline" style="font-size:9px;">प्रगति</span></span>
       </button>
       <button class="nav-btn" id="nb-prof" onclick="switchTab('s-profile','nb-prof')">
         <svg class="nav-art" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
         </svg>
-        <span class="nav-lbl">Profile</span>
+        <span class="nav-lbl"><span class="ne-inline" style="font-size:9px;">प्रोफाइल</span></span>
       </button>
     </div>
   </div>
@@ -1218,7 +1266,7 @@ function loadDash() {
 
   // Greeting
   const h = new Date().getHours();
-  document.getElementById("d-greet").textContent = h < 12 ? "Subha prabhat / Good morning 🌸" : h < 17 ? "Subha diu / Good afternoon ☀️" : "Shubha sandha / Good evening 🌙";
+  document.getElementById("d-greet").innerHTML = h < 12 ? '<span class="ne-inline">शुभ प्रभात 🌸</span> <span class="en-inline">Good morning</span>' : h < 17 ? '<span class="ne-inline">शुभ दिउँसो ☀️</span> <span class="en-inline">Good afternoon</span>' : '<span class="ne-inline">शुभ साँझ 🌙</span> <span class="en-inline">Good evening</span>';
   document.getElementById("d-name").textContent  = (PROFILE.name || "She") + "! 💪";
 
   // Stats
@@ -1496,7 +1544,9 @@ function renderWaterTracker() {
   }
   wrap.innerHTML = html;
   const sub = document.querySelector('.water-sub');
-  if (sub) sub.textContent = count >= 8 ? '🎉 Aaj ko paani laksya pura! / Daily water goal done!' : `${count}/8 glass piyo — ${8-count} baki chha`;
+  if (sub) sub.innerHTML = count >= 8
+    ? '<span class="ne">🎉 आजको पानी लक्ष्य पूरा!</span><span class="en">Daily water goal complete!</span>'
+    : `<span class="ne">${count}/८ गिलास पियो — ${8-count} बाँकी छ</span><span class="en">${count}/8 glasses done — ${8-count} remaining</span>`;
 }
 
 function toggleWater(i) {
@@ -1508,8 +1558,8 @@ function toggleWater(i) {
   if (count === 8) {
     showNotif({
       icon: `<svg viewBox="0 0 24 24" fill="none" stroke="#2196F3" stroke-width="2.5" stroke-linecap="round"><path d="M12 2C6 9 4 13.5 4 16a8 8 0 0016 0c0-2.5-2-7-8-14z"/></svg>`,
-      title: "Paani laksya pura! 💙",
-      msg: "Water goal complete! / Aaj ko 8 glass piyo — shaabaash!",
+      title: `<span class="ne-inline">पानी लक्ष्य पूरा! 💙</span>`,
+      msg: `<span class="ne">आज ८ गिलास पानी पियौ — शाबाश!</span><span class="en">Water goal complete! You drank all 8 glasses today!</span>`,
       actions: []
     });
   }
@@ -1519,13 +1569,45 @@ function toggleWater(i) {
    🔔 NOTIFICATION SYSTEM (in-app scheduled + bilingual)
 ════════════════════════════════════════════════════════ */
 const NOTIF_SCHEDULES = [
-  { h:7,  m:30, type:"meal",  meal:"breakfast", title:"Bihana ko khaana ko samay! 🌅", titleEn:"Breakfast Time!", msg:"Chiura-dahi, roti ra tarkari — bihana ko paushtik suru garau. / Start your morning with a nourishing Nepali breakfast.", q:"Khanubhayo? / Did you eat?", },
-  { h:9,  m:0,  type:"water", title:"Paani piunu na! 💧", titleEn:"Time to Hydrate!", msg:"Paani piyera metabolism active raakhu. / Keep your metabolism active with water.", },
-  { h:12, m:30, type:"meal",  meal:"lunch", title:"Diuso ko khaana ko samay! ☀️", titleEn:"Lunch Time!", msg:"Dal bhat wa roti tarkari — diuso ko energy bharpu. / Refuel your afternoon with a balanced Nepali meal.", q:"Khanubhayo? / Did you eat?", },
-  { h:15, m:0,  type:"water", title:"Paani piunu na! 💧", titleEn:"Afternoon Hydration!", msg:"Bihanai dekhi kati piyo? Alik paani piyo. / How much have you had? Take a water break.", },
-  { h:16, m:0,  type:"meal",  meal:"snack", title:"Khaja ko samay! 🍎", titleEn:"Snack Time!", msg:"Chana wa phalaphul — beli ko khaana agadi bhok niyantran. / Control pre-dinner hunger with a healthy snack.", q:"Khajama ke khanu bhayo? / What did you snack on?", },
-  { h:19, m:30, type:"meal",  meal:"dinner", title:"Beli ko khaana! 🌙", titleEn:"Dinner Time!", msg:"Beli halka khaau — roti ra tarkari ya dal. / Keep dinner light — roti or khichdi works best.", q:"Khanubhayo? / Did you eat?", },
-  { h:21, m:0,  type:"water", title:"Antim glass paani! 💧", titleEn:"Last Water Reminder!", msg:"Sutnu agadi ek glass paani piyo. / Drink one last glass before bedtime.", },
+  {
+    h:7, m:30, type:"meal", meal:"breakfast",
+    title:`<span class="ne-inline">बिहानको खाना! 🌅</span>`,
+    msg:`<span class="ne">चिउरा-दही, रोटी र तरकारी — बिहानको पौष्टिक सुरुवात गरौं।</span><span class="en">Breakfast time! Start your morning with a nourishing Nepali breakfast.</span>`,
+    yesLabel:`<span class="ne-inline">खाएँ!</span>`, noLabel:`<span class="ne-inline">पछि</span>`
+  },
+  {
+    h:9, m:0, type:"water",
+    title:`<span class="ne-inline">पानी पिउनुस्! 💧</span>`,
+    msg:`<span class="ne">एक गिलास पानी पिएर दिन सुरु गर्नुस् — metabolism सक्रिय राख्छ।</span><span class="en">Drink a glass of water — keeps your metabolism active.</span>`,
+  },
+  {
+    h:12, m:30, type:"meal", meal:"lunch",
+    title:`<span class="ne-inline">दिउँसोको खाना! ☀️</span>`,
+    msg:`<span class="ne">दाल भात वा रोटी तरकारी — दिउँसोको ऊर्जा भर्नुस्।</span><span class="en">Lunch time! Refuel with a balanced Nepali meal.</span>`,
+    yesLabel:`<span class="ne-inline">खाएँ!</span>`, noLabel:`<span class="ne-inline">पछि</span>`
+  },
+  {
+    h:15, m:0, type:"water",
+    title:`<span class="ne-inline">दिउँसो पानी! 💧</span>`,
+    msg:`<span class="ne">बिहानदेखि कति पियो? अलिक पानी पिउनुस्।</span><span class="en">Afternoon hydration check — take a water break now.</span>`,
+  },
+  {
+    h:16, m:0, type:"meal", meal:"snack",
+    title:`<span class="ne-inline">खाजाको समय! 🍎</span>`,
+    msg:`<span class="ne">चना वा फलफूल — बेलुकाको खाना अघि भोक नियन्त्रण गर्नुस्।</span><span class="en">Snack time! Control pre-dinner hunger with a healthy snack.</span>`,
+    yesLabel:`<span class="ne-inline">खाएँ!</span>`, noLabel:`<span class="ne-inline">पछि</span>`
+  },
+  {
+    h:19, m:30, type:"meal", meal:"dinner",
+    title:`<span class="ne-inline">बेलुकाको खाना! 🌙</span>`,
+    msg:`<span class="ne">बेलुका हलुको खानुस् — रोटी र तरकारी वा दाल। राम्रो निद्राको लागि हलुको खाना उत्तम।</span><span class="en">Dinner time! Keep it light — roti with dal or tarkari works best.</span>`,
+    yesLabel:`<span class="ne-inline">खाएँ!</span>`, noLabel:`<span class="ne-inline">पछि</span>`
+  },
+  {
+    h:21, m:0, type:"water",
+    title:`<span class="ne-inline">अन्तिम गिलास पानी! 💧</span>`,
+    msg:`<span class="ne">सुत्नु अघि एक गिलास पानी पिउनुस् — राम्रो छ।</span><span class="en">Last water reminder — drink one glass before bedtime.</span>`,
+  },
 ];
 
 let notifTimers = [];
@@ -1546,12 +1628,12 @@ function scheduleNotifications() {
     const t = setTimeout(() => {
       if (sched.type === 'water') {
         const count = parseInt(localStorage.getItem('sh_water_' + todayStr()) || '0');
-        if (count >= 8) return; // already done
+        if (count >= 8) return;
         showNotif({
           icon: `<svg viewBox="0 0 24 24" fill="none" stroke="#2196F3" stroke-width="2.5" stroke-linecap="round"><path d="M12 2C6 9 4 13.5 4 16a8 8 0 0016 0c0-2.5-2-7-8-14z"/></svg>`,
           title: sched.title,
           msg: sched.msg,
-          actions: [{ label:'Piyo! / Done!', fn:'markWater()' }]
+          actions: [{ label:`<span class="ne-inline">पिएँ!</span> <span class="en-inline">Done!</span>`, fn:'markWater()' }]
         });
       } else {
         showNotif({
@@ -1559,8 +1641,7 @@ function scheduleNotifications() {
           title: sched.title,
           msg: sched.msg,
           actions: [
-            { label:'Khanchu / Yes!', fn:`logMealConfirm('${sched.meal}')` },
-            { label:'Pachi / Later', fn:'closeNotif()' }
+            { label: sched.yesLabel || `<span class="ne-inline">खाएँ!</span>`, fn:`logMealConfirm('${sched.meal}')` },
           ]
         });
       }
@@ -1572,12 +1653,12 @@ function scheduleNotifications() {
 function showNotif({ icon, title, msg, actions }) {
   const banner = document.getElementById('notif-banner');
   document.getElementById('notif-icon').innerHTML = icon;
-  document.getElementById('notif-title').textContent = title;
-  document.getElementById('notif-msg').textContent = msg;
+  document.getElementById('notif-title').innerHTML = title;
+  document.getElementById('notif-msg').innerHTML = msg;
   const actEl = document.getElementById('notif-actions');
   actEl.innerHTML = actions.map(a =>
     `<button class="notif-yes" onclick="${a.fn}">${a.label}</button>`
-  ).join('') + (actions.length ? `<button class="notif-no" onclick="closeNotif()">Baad maa / Later</button>` : '');
+  ).join('') + (actions.length ? `<button class="notif-no" onclick="closeNotif()"><span class="ne-inline">पछि</span> <span class="en-inline">Later</span></button>` : '');
   banner.classList.add('visible');
   setTimeout(() => banner.classList.remove('visible'), 12000);
 }
@@ -1592,12 +1673,13 @@ function markWater() {
   localStorage.setItem(key, count);
   renderWaterTracker();
   closeNotif();
-  toast(`Glass ${count}/8 piyo! 💧`);
+  toast(`💧 ${count}/८ गिलास — राम्रो! / Glass ${count}/8 done!`);
 }
 
 function logMealConfirm(meal) {
+  const nameMap = { breakfast:'बिहानको खाना', lunch:'दिउँसोको खाना', dinner:'बेलुकाको खाना', snack:'खाजा' };
   closeNotif();
-  toast(`${meal.charAt(0).toUpperCase() + meal.slice(1)} logged! Ramro kaam! 🌸`);
+  toast(`${nameMap[meal] || meal} logged! 🌸 राम्रो काम!`);
   show('s-meal');
   const chip = document.querySelector(`#meal-chips .chip[data-v="${meal}"]`);
   if (chip) { document.querySelectorAll('#meal-chips .chip').forEach(c=>c.classList.remove('selected')); chip.classList.add('selected'); }
@@ -1607,15 +1689,15 @@ function testNotification() {
   const notifs = [
     {
       icon: `<svg viewBox="0 0 24 24" fill="none" stroke="#2196F3" stroke-width="2.5" stroke-linecap="round"><path d="M12 2C6 9 4 13.5 4 16a8 8 0 0016 0c0-2.5-2-7-8-14z"/></svg>`,
-      title: "Paani piunu na! 💧",
-      msg: "Aaj kati glass piyo? / How many glasses today? Thik chhaina — piu na!",
-      actions: [{ label:'Piyo! / Done!', fn:'markWater()' }]
+      title: `<span class="ne-inline">पानी पिउनुस्! 💧</span>`,
+      msg: `<span class="ne">आज कति गिलास पियो? ठिक छैन — अहिले एक गिलास पिउनुस्!</span><span class="en">How many glasses today? Not enough — drink one right now!</span>`,
+      actions: [{ label:`<span class="ne-inline">पिएँ!</span> <span class="en-inline">Done!</span>`, fn:'markWater()' }]
     },
     {
       icon: `<svg viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>`,
-      title: "Khaana ko samay! 🌸",
-      msg: "Diuso ko khaana bhayo? Dal bhat wa roti tarkari khao. / Lunch time! Have your Nepali meal.",
-      actions: [{ label:'Khanchu!', fn:"logMealConfirm('lunch')" }, { label:'Pachi / Later', fn:'closeNotif()' }]
+      title: `<span class="ne-inline">दिउँसोको खाना! ☀️</span>`,
+      msg: `<span class="ne">दिउँसोको खाना भयो? दाल भात वा रोटी तरकारी खानुस्।</span><span class="en">Lunch time! Have your dal bhat or roti tarkari now.</span>`,
+      actions: [{ label:`<span class="ne-inline">खाएँ!</span>`, fn:"logMealConfirm('lunch')" }]
     }
   ];
   showNotif(notifs[Math.floor(Math.random() * notifs.length)]);
