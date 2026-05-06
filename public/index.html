@@ -896,31 +896,51 @@ async function doLogout() {
   document.getElementById("bottom-nav").style.display = "none";
 }
 
-// Capture redirect result IMMEDIATELY — before any splash delay
-const redirectResultPromise = auth.getRedirectResult().catch(err => {
-  console.error("Redirect error:", err);
-  return null;
-});
+// Capture redirect result IMMEDIATELY at script root — before any delay
+const redirectResultPromise = auth.getRedirectResult()
+  .then(result => {
+    console.log("[ShapeHer] getRedirectResult →", result?.user?.email || "no redirect user");
+    return result;
+  })
+  .catch(err => {
+    console.error("[ShapeHer] getRedirectResult error:", err.code, err.message);
+    return null;
+  });
 
-// App initialisation — splash shows for 2s then auth check
+// App initialisation — splash shows for 2s, auth check runs in parallel
 window.addEventListener("load", () => {
   setTimeout(async () => {
-    try {
-      const result = await redirectResultPromise;
-      if (result && result.user) {
-        await handleUser(result.user);
-        return;
-      }
-    } catch (err) {
-      console.error("Redirect error:", err);
+    // Step 1: Did we just come back from a Google redirect?
+    const result = await redirectResultPromise;
+    if (result && result.user) {
+      console.log("[ShapeHer] ✅ Signed in via redirect:", result.user.email);
+      await handleUser(result.user);
+      return;
     }
-    auth.onAuthStateChanged(async user => {
-      if (user) {
-        await handleUser(user);
-      } else {
-        show("s-auth");
-      }
+
+    // Step 2: Already signed in from a previous session?
+    if (auth.currentUser) {
+      console.log("[ShapeHer] ✅ Existing session:", auth.currentUser.email);
+      await handleUser(auth.currentUser);
+      return;
+    }
+
+    // Step 3: Wait for Firebase to restore auth state (one-time, then unsubscribe)
+    console.log("[ShapeHer] Waiting for auth state...");
+    const authUser = await new Promise(resolve => {
+      const unsub = auth.onAuthStateChanged(user => {
+        unsub(); // fire once only
+        resolve(user);
+      });
     });
+
+    if (authUser) {
+      console.log("[ShapeHer] ✅ Auth restored:", authUser.email);
+      await handleUser(authUser);
+    } else {
+      console.log("[ShapeHer] No user — showing sign-in screen");
+      show("s-auth");
+    }
   }, 2000);
 });
 
