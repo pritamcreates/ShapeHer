@@ -1,0 +1,10 @@
+{
+  "hosting": {
+    "site": "shapeher",
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*"
+    ]
+  }
+}
