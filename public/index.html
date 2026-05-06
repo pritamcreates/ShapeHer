@@ -896,11 +896,17 @@ async function doLogout() {
   document.getElementById("bottom-nav").style.display = "none";
 }
 
+// Capture redirect result IMMEDIATELY — before any splash delay
+const redirectResultPromise = auth.getRedirectResult().catch(err => {
+  console.error("Redirect error:", err);
+  return null;
+});
+
 // App initialisation — splash shows for 2s then auth check
 window.addEventListener("load", () => {
   setTimeout(async () => {
     try {
-      const result = await auth.getRedirectResult();
+      const result = await redirectResultPromise;
       if (result && result.user) {
         await handleUser(result.user);
         return;
