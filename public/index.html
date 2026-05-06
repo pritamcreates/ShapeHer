@@ -891,14 +891,31 @@ async function signUpLocal() {
   const name    = document.getElementById("auth-name-new").value.trim();
   const pin     = document.getElementById("auth-pin-new").value.trim();
   const confirm = document.getElementById("auth-pin-confirm").value.trim();
-  if (!name)              { toast("Please enter your name 🌸"); return; }
+  if (!name)                                     { toast("Please enter your name 🌸"); return; }
   if (pin.length !== 4 || !/^\d{4}$/.test(pin)) { toast("PIN must be exactly 4 digits."); return; }
-  if (pin !== confirm)    { toast("PINs don't match — try again."); return; }
+  if (pin !== confirm)                           { toast("PINs don't match — try again."); return; }
   const uid = makeUserId(name, pin);
   localStorage.setItem("sh_uid",  uid);
   localStorage.setItem("sh_name", name);
   CU = { uid, displayName: name };
-  await handleUser(CU);
+  loader(true);
+  try {
+    const doc = await db.collection("users").doc(uid).get();
+    loader(false);
+    if (doc.exists && doc.data().onboardingComplete) {
+      PROFILE = doc.data();
+      loadDash();
+    } else {
+      show("s-onboard");
+      renderQ(0);
+    }
+  } catch (err) {
+    console.error("signUpLocal error:", err);
+    loader(false);
+    // Firestore rules may be blocking — still proceed to onboarding
+    show("s-onboard");
+    renderQ(0);
+  }
 }
 
 async function signInLocal() {
@@ -907,7 +924,6 @@ async function signInLocal() {
   if (!name) { toast("Please enter your name 🌸"); return; }
   if (!pin)  { toast("Please enter your PIN."); return; }
   const uid = makeUserId(name, pin);
-  // Verify: check if a Firestore doc exists for this uid
   loader(true);
   try {
     const doc = await db.collection("users").doc(uid).get();
@@ -915,17 +931,29 @@ async function signInLocal() {
     localStorage.setItem("sh_uid",  uid);
     localStorage.setItem("sh_name", name);
     CU = { uid, displayName: name };
-    await handleUser(CU);
-  } catch (err) { console.error(err); toast("Login failed — check your connection."); loader(false); }
+    PROFILE = doc.data();
+    loader(false);
+    if (PROFILE.onboardingComplete) { loadDash(); } else { show("s-onboard"); renderQ(0); }
+  } catch (err) {
+    console.error("signInLocal error:", err);
+    toast("Login failed — check your connection or Firestore rules.");
+    loader(false);
+  }
 }
 
 async function handleUser(user) {
   CU = user;
-  const doc = await db.collection("users").doc(user.uid).get();
-  if (doc.exists && doc.data().onboardingComplete) {
-    PROFILE = doc.data();
-    loadDash();
-  } else {
+  try {
+    const doc = await db.collection("users").doc(user.uid).get();
+    if (doc.exists && doc.data().onboardingComplete) {
+      PROFILE = doc.data();
+      loadDash();
+    } else {
+      show("s-onboard");
+      renderQ(0);
+    }
+  } catch (err) {
+    console.error("handleUser error:", err);
     show("s-onboard");
     renderQ(0);
   }
@@ -1040,7 +1068,7 @@ async function finishOnboard() {
     joinDate:         firebase.firestore.FieldValue.serverTimestamp(),
   };
 
-  await db.collection("users").doc(CU.uid).set(PROFILE);
+  try { await db.collection("users").doc(CU.uid).set(PROFILE); } catch(e) { console.error("Firestore write failed:", e); }
   const today = todayStr();
   await db.collection("users").doc(CU.uid).collection("weightLogs").doc(today)
     .set({ weight: PROFILE.currentWeight, date: today, ts: firebase.firestore.FieldValue.serverTimestamp() });
