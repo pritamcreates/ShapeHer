@@ -58,8 +58,8 @@
       align-items: center;
       gap: 12px;
     }
-    .splash-flower { font-size: 80px; animation: float 2s ease-in-out infinite; }
-    @keyframes float { 0%,100%{ transform:translateY(0) } 50%{ transform:translateY(-10px) } }
+    .splash-flower { width: 110px; height: 110px; animation: float 2.5s ease-in-out infinite; filter: drop-shadow(0 8px 24px rgba(0,0,0,0.18)); }
+    @keyframes float { 0%,100%{ transform:translateY(0) rotate(-3deg) } 50%{ transform:translateY(-14px) rotate(3deg) } }
     .splash-logo { font-size: 38px; font-weight: 800; color: #fff; letter-spacing: -1px; }
     .splash-logo span { color: rgba(255,255,255,0.6); }
     .splash-tag { font-size: 14px; color: rgba(255,255,255,0.8); font-weight: 400; }
@@ -73,13 +73,49 @@
       padding: 40px 28px;
       gap: 0;
     }
-    .auth-art { font-size: 90px; margin-bottom: 10px; }
+    .auth-art { width: 100px; height: 100px; margin-bottom: 10px; filter: drop-shadow(0 4px 16px rgba(196,75,155,0.3)); }
     .auth-logo { font-size: 30px; font-weight: 800; color: var(--pink); }
     .auth-logo span { color: var(--pink-light); }
     .auth-headline { font-size: 22px; font-weight: 700; color: var(--text); text-align: center; margin-top: 24px; }
     .auth-sub { font-size: 13px; color: var(--soft); text-align: center; line-height: 1.7; margin: 8px 0 36px; }
     /* auth tabs + inputs already inline-styled */
     .auth-note { font-size: 11px; color: var(--soft); text-align: center; margin-top: 18px; line-height: 1.6; }
+
+    /* ══════════════════════════════════════════
+       NOTIFICATION BANNER
+    ══════════════════════════════════════════ */
+    .notif-banner {
+      position: fixed; top: 0; left: 50%; transform: translateX(-50%) translateY(-120px);
+      width: 100%; max-width: 430px; z-index: 500;
+      background: #fff; box-shadow: 0 4px 24px rgba(196,75,155,.18);
+      border-radius: 0 0 22px 22px; padding: 16px 20px 14px;
+      transition: transform .42s cubic-bezier(.34,1.56,.64,1);
+      display: flex; align-items: flex-start; gap: 14px;
+    }
+    .notif-banner.visible { transform: translateX(-50%) translateY(0); }
+    .notif-icon-wrap { width: 44px; height: 44px; border-radius: 14px; background: var(--grad-soft); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .notif-icon-wrap svg { width: 24px; height: 24px; }
+    .notif-body { flex: 1; }
+    .notif-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+    .notif-msg { font-size: 12px; color: var(--soft); line-height: 1.5; }
+    .notif-actions { display: flex; gap: 8px; margin-top: 10px; }
+    .notif-yes { padding: 8px 20px; background: var(--grad); color: #fff; border: none; border-radius: 10px; font-family:'Poppins',sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; }
+    .notif-no { padding: 8px 16px; background: transparent; color: var(--soft); border: 2px solid var(--border); border-radius: 10px; font-family:'Poppins',sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; }
+    .notif-close { position: absolute; top: 12px; right: 16px; background: none; border: none; font-size: 18px; color: var(--soft); cursor: pointer; line-height: 1; }
+
+    /* notification dot on meal cards */
+    .meal-card-notif { position: relative; }
+    .meal-notif-dot { position: absolute; top: 14px; right: 16px; width: 10px; height: 10px; background: var(--pink); border-radius: 50%; box-shadow: 0 0 0 3px rgba(196,75,155,.2); animation: pulse-dot 1.8s infinite; }
+    @keyframes pulse-dot { 0%,100%{ transform:scale(1); opacity:1 } 50%{ transform:scale(1.4); opacity:.7 } }
+
+    /* water tracker */
+    .water-tracker { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .water-drop {
+      width: 36px; height: 36px; cursor: pointer; transition: transform .2s;
+      opacity: 0.35; filter: grayscale(1);
+    }
+    .water-drop.filled { opacity: 1; filter: none; transform: scale(1.1); }
+    .water-drop:active { transform: scale(.9); }
 
     /* ══════════════════════════════════════════
        ONBOARDING
@@ -370,7 +406,9 @@
       gap: 4px; padding: 8px 0; border: none; background: none;
       font-family: 'Poppins', sans-serif; cursor: pointer;
     }
-    .nav-art { font-size: 22px; }
+    .nav-art { width: 24px; height: 24px; }
+    .nav-art path, .nav-art circle, .nav-art rect, .nav-art polyline, .nav-art line { stroke: var(--soft); transition: stroke .2s; }
+    .nav-btn.active .nav-art path, .nav-btn.active .nav-art circle, .nav-btn.active .nav-art rect, .nav-btn.active .nav-art polyline, .nav-btn.active .nav-art line { stroke: var(--pink); }
     .nav-lbl { font-size: 10px; font-weight: 500; color: var(--soft); }
     .nav-btn.active .nav-lbl { color: var(--pink); }
 
@@ -403,16 +441,79 @@
 <body>
 <div id="app">
 
+  <!-- ═══════════ NOTIFICATION BANNER ═══════════ -->
+  <div id="notif-banner" class="notif-banner">
+    <div class="notif-icon-wrap" id="notif-icon"></div>
+    <div class="notif-body">
+      <div class="notif-title" id="notif-title"></div>
+      <div class="notif-msg" id="notif-msg"></div>
+      <div class="notif-actions" id="notif-actions"></div>
+    </div>
+    <button class="notif-close" onclick="closeNotif()">✕</button>
+  </div>
+
   <!-- ═══════════ SPLASH ═══════════ -->
   <div id="s-splash" class="screen active">
-    <div class="splash-flower">🌸</div>
+    <svg class="splash-flower" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Petals -->
+      <ellipse cx="100" cy="50" rx="18" ry="38" fill="rgba(255,255,255,0.9)" transform="rotate(0 100 100)"/>
+      <ellipse cx="100" cy="50" rx="18" ry="38" fill="rgba(255,255,255,0.85)" transform="rotate(45 100 100)"/>
+      <ellipse cx="100" cy="50" rx="18" ry="38" fill="rgba(255,255,255,0.9)" transform="rotate(90 100 100)"/>
+      <ellipse cx="100" cy="50" rx="18" ry="38" fill="rgba(255,255,255,0.85)" transform="rotate(135 100 100)"/>
+      <ellipse cx="100" cy="50" rx="18" ry="38" fill="rgba(255,255,255,0.9)" transform="rotate(180 100 100)"/>
+      <ellipse cx="100" cy="50" rx="18" ry="38" fill="rgba(255,255,255,0.85)" transform="rotate(225 100 100)"/>
+      <ellipse cx="100" cy="50" rx="18" ry="38" fill="rgba(255,255,255,0.9)" transform="rotate(270 100 100)"/>
+      <ellipse cx="100" cy="50" rx="18" ry="38" fill="rgba(255,255,255,0.85)" transform="rotate(315 100 100)"/>
+      <!-- Center -->
+      <circle cx="100" cy="100" r="26" fill="rgba(255,220,240,0.95)"/>
+      <circle cx="100" cy="100" r="18" fill="rgba(255,255,255,0.9)"/>
+      <!-- Stamen dots -->
+      <circle cx="100" cy="92" r="3" fill="#C44B9B"/>
+      <circle cx="107" cy="96" r="2.5" fill="#FF6B9D"/>
+      <circle cx="107" cy="104" r="3" fill="#C44B9B"/>
+      <circle cx="100" cy="108" r="2.5" fill="#FF6B9D"/>
+      <circle cx="93" cy="104" r="3" fill="#C44B9B"/>
+      <circle cx="93" cy="96" r="2.5" fill="#FF6B9D"/>
+      <circle cx="100" cy="100" r="4" fill="#C44B9B"/>
+      <!-- Leaf accents -->
+      <ellipse cx="68" cy="148" rx="12" ry="22" fill="rgba(255,255,255,0.5)" transform="rotate(-35 68 148)"/>
+      <ellipse cx="132" cy="148" rx="12" ry="22" fill="rgba(255,255,255,0.5)" transform="rotate(35 132 148)"/>
+    </svg>
     <div class="splash-logo">Shape<span>Her</span></div>
     <div class="splash-tag">Your journey, your pace, your health</div>
   </div>
 
   <!-- ═══════════ AUTH ═══════════ -->
   <div id="s-auth" class="screen">
-    <div class="auth-art">🌺</div>
+    <svg class="auth-art" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Hibiscus petals -->
+      <ellipse cx="100" cy="48" rx="22" ry="44" fill="#FF6B9D" opacity="0.9"/>
+      <ellipse cx="100" cy="48" rx="22" ry="44" fill="#C44B9B" opacity="0.7" transform="rotate(72 100 100)"/>
+      <ellipse cx="100" cy="48" rx="22" ry="44" fill="#FF6B9D" opacity="0.85" transform="rotate(144 100 100)"/>
+      <ellipse cx="100" cy="48" rx="22" ry="44" fill="#C44B9B" opacity="0.8" transform="rotate(216 100 100)"/>
+      <ellipse cx="100" cy="48" rx="22" ry="44" fill="#FF6B9D" opacity="0.9" transform="rotate(288 100 100)"/>
+      <!-- Petal highlights -->
+      <ellipse cx="100" cy="62" rx="8" ry="22" fill="rgba(255,200,220,0.5)"/>
+      <ellipse cx="100" cy="62" rx="8" ry="22" fill="rgba(255,200,220,0.5)" transform="rotate(72 100 100)"/>
+      <ellipse cx="100" cy="62" rx="8" ry="22" fill="rgba(255,200,220,0.5)" transform="rotate(144 100 100)"/>
+      <ellipse cx="100" cy="62" rx="8" ry="22" fill="rgba(255,200,220,0.5)" transform="rotate(216 100 100)"/>
+      <ellipse cx="100" cy="62" rx="8" ry="22" fill="rgba(255,200,220,0.5)" transform="rotate(288 100 100)"/>
+      <!-- Center -->
+      <circle cx="100" cy="100" r="22" fill="#FFF0F7"/>
+      <circle cx="100" cy="100" r="14" fill="#FFD6E8"/>
+      <!-- Stamen -->
+      <line x1="100" y1="86" x2="100" y2="100" stroke="#C44B9B" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="100" cy="84" r="4" fill="#C44B9B"/>
+      <line x1="107" y1="89" x2="100" y2="100" stroke="#FF6B9D" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="109" cy="87" r="3" fill="#FF6B9D"/>
+      <line x1="93" y1="89" x2="100" y2="100" stroke="#C44B9B" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="91" cy="87" r="3" fill="#C44B9B"/>
+      <!-- Leaves -->
+      <ellipse cx="64" cy="152" rx="11" ry="24" fill="#7BC67E" opacity="0.8" transform="rotate(-40 64 152)"/>
+      <ellipse cx="136" cy="152" rx="11" ry="24" fill="#5AAD5E" opacity="0.8" transform="rotate(40 136 152)"/>
+      <line x1="64" y1="140" x2="72" y2="164" stroke="#4CAF50" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="136" y1="140" x2="128" y2="164" stroke="#388E3C" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
     <div class="auth-logo">Shape<span>Her</span></div>
     <div class="auth-headline">Welcome, beautiful 🌸</div>
     <div class="auth-sub">Your personalized Nepali diet plan — built around your real life, not a ChatGPT PDF.</div>
@@ -477,39 +578,62 @@
 
     <div class="stats-row">
       <div class="stat-card">
-        <div class="stat-lbl">Current Weight</div>
+        <div class="stat-lbl">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--soft)" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-1px;margin-right:3px"><circle cx="12" cy="5" r="3"/><path d="M6 21v-2a6 6 0 0112 0v2"/></svg>
+          हालको तौल
+        </div>
         <div class="stat-val"><span id="d-cw">--</span><span class="stat-unit"> kg</span></div>
         <div class="stat-sub" id="d-cw-sub">Start tracking!</div>
       </div>
       <div class="stat-card">
-        <div class="stat-lbl">Goal Weight</div>
+        <div class="stat-lbl">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--soft)" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-1px;margin-right:3px"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          लक्ष्य तौल
+        </div>
         <div class="stat-val"><span id="d-gw">--</span><span class="stat-unit"> kg</span></div>
         <div class="stat-sub" id="d-togo"></div>
       </div>
     </div>
 
-    <div class="sec-title">💧 Water Goal</div>
+    <div class="sec-title">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2196F3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:6px"><path d="M12 2C6 9 4 13.5 4 16a8 8 0 0016 0c0-2.5-2-7-8-14z"/></svg>
+      Paani Goal / Water Goal
+    </div>
     <div class="water-card">
-      <div class="water-art">💧</div>
       <div>
-        <div class="water-title" id="d-water-title">Drink 8 glasses today</div>
-        <div class="water-sub">One glass before each meal reduces hunger naturally</div>
+        <div class="water-title" id="d-water-title">Aaj 8 glass paani piunu / Drink 8 glasses today</div>
+        <div class="water-sub">Khana agadi ek glass paani piyo — bhok ghataaucha</div>
+        <div class="water-tracker" id="water-tracker">
+          <!-- rendered by JS -->
+        </div>
       </div>
     </div>
 
-    <div class="sec-title">🍽️ Today's Meal Plan</div>
+    <div class="sec-title">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px"><path d="M3 6h18M3 12h18M3 18h7"/><circle cx="17" cy="17" r="4"/><path d="m19 15-3 3 1.5 1.5"/></svg>
+      Aajako Khaana / Today's Meal Plan
+    </div>
     <div id="d-meals"><!-- rendered --></div>
 
     <div id="d-tip"><!-- rendered --></div>
 
-    <div class="sec-title">⚡ Quick Log</div>
+    <div class="sec-title" style="display:flex;align-items:center;justify-content:space-between;padding-right:24px;">
+      <span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        Quick Log
+      </span>
+      <button onclick="testNotification()" style="background:var(--grad-soft);border:none;border-radius:10px;padding:6px 12px;font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;color:var(--pink);cursor:pointer;display:flex;align-items:center;gap:5px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        Notifications
+      </button>
+    </div>
     <div class="qa-grid">
       <button class="qa-btn" onclick="show('s-meal')">
-        <div class="qa-art">📸</div>
+        <svg class="qa-art" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/></svg>
         <div class="qa-lbl">Log Meal</div>
       </button>
       <button class="qa-btn" onclick="show('s-weight'); loadWChart()">
-        <div class="qa-art">⚖️</div>
+        <svg class="qa-art" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h18"/><circle cx="12" cy="12" r="3" fill="rgba(196,75,155,0.1)"/></svg>
         <div class="qa-lbl">Log Weight</div>
       </button>
     </div>
@@ -579,8 +703,8 @@
   <!-- ═══════════ PROGRESS ═══════════ -->
   <div id="s-progress" class="screen">
     <div class="prog-header">
-      <div class="prog-title">Your Progress 📈</div>
-      <div class="prog-sub">Every logged day is a win — keep going!</div>
+      <div class="prog-title">Tpaaiko Progress 📈</div>
+      <div class="prog-sub">Pratyek logged din ek jeet ho — jari raakha!</div>
     </div>
     <div class="chart-card" style="margin:20px 24px;">
       <div class="chart-title">Weight Trend (Last 14 Days)</div>
@@ -600,17 +724,17 @@
 
     <div class="prof-section">
       <div class="prof-sec-title">Your Stats</div>
-      <div class="prof-row"><div class="prof-row-l"><span class="prof-row-icon">⚖️</span><span class="prof-row-lbl">Current Weight</span></div><span class="prof-row-val" id="p-cw">--</span></div>
-      <div class="prof-row"><div class="prof-row-l"><span class="prof-row-icon">🎯</span><span class="prof-row-lbl">Goal Weight</span></div><span class="prof-row-val" id="p-gw">--</span></div>
-      <div class="prof-row"><div class="prof-row-l"><span class="prof-row-icon">📏</span><span class="prof-row-lbl">Height</span></div><span class="prof-row-val" id="p-ht">--</span></div>
-      <div class="prof-row"><div class="prof-row-l"><span class="prof-row-icon">🏥</span><span class="prof-row-lbl">Health Conditions</span></div><span class="prof-row-val" id="p-cond">None</span></div>
+      <div class="prof-row"><div class="prof-row-l"><span class="prof-row-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="3"/><path d="M6 21v-2a6 6 0 0112 0v2"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="9" y1="11" x2="15" y2="11"/></svg></span><span class="prof-row-lbl">Current Weight</span></div><span class="prof-row-val" id="p-cw">--</span></div>
+      <div class="prof-row"><div class="prof-row-l"><span class="prof-row-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></span><span class="prof-row-lbl">Goal Weight</span></div><span class="prof-row-val" id="p-gw">--</span></div>
+      <div class="prof-row"><div class="prof-row-l"><span class="prof-row-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2" stroke-linecap="round"><line x1="12" y1="2" x2="12" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></span><span class="prof-row-lbl">Height</span></div><span class="prof-row-val" id="p-ht">--</span></div>
+      <div class="prof-row"><div class="prof-row-l"><span class="prof-row-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2" stroke-linecap="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span><span class="prof-row-lbl">Health Conditions</span></div><span class="prof-row-val" id="p-cond">None</span></div>
     </div>
 
     <div class="prof-section">
       <div class="prof-sec-title">Plan Details</div>
-      <div class="prof-row"><div class="prof-row-l"><span class="prof-row-icon">🥗</span><span class="prof-row-lbl">Diet Type</span></div><span class="prof-row-val" id="p-diet">--</span></div>
-      <div class="prof-row"><div class="prof-row-l"><span class="prof-row-icon">💧</span><span class="prof-row-lbl">Daily Water Goal</span></div><span class="prof-row-val">8 glasses</span></div>
-      <div class="prof-row"><div class="prof-row-l"><span class="prof-row-icon">📉</span><span class="prof-row-lbl">Target Loss / Week</span></div><span class="prof-row-val">0.5 – 1 kg</span></div>
+      <div class="prof-row"><div class="prof-row-l"><span class="prof-row-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2" stroke-linecap="round"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2z"/><path d="M12 8v4l3 3"/></svg></span><span class="prof-row-lbl">Diet Type</span></div><span class="prof-row-val" id="p-diet">--</span></div>
+      <div class="prof-row"><div class="prof-row-l"><span class="prof-row-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2" stroke-linecap="round"><path d="M12 2C6 9 4 13.5 4 16a8 8 0 0016 0c0-2.5-2-7-8-14z"/></svg></span><span class="prof-row-lbl">Daily Water Goal</span></div><span class="prof-row-val">8 glasses</span></div>
+      <div class="prof-row"><div class="prof-row-l"><span class="prof-row-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2" stroke-linecap="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></span><span class="prof-row-lbl">Target Loss / Week</span></div><span class="prof-row-val">0.5 – 1 kg</span></div>
     </div>
 
     <button class="btn-logout" onclick="doLogout()">Sign Out</button>
@@ -620,13 +744,22 @@
   <div id="bottom-nav">
     <div class="nav-inner">
       <button class="nav-btn active" id="nb-home" onclick="switchTab('s-dash','nb-home')">
-        <span class="nav-art">🏠</span><span class="nav-lbl">Home</span>
+        <svg class="nav-art" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/>
+        </svg>
+        <span class="nav-lbl">Home</span>
       </button>
       <button class="nav-btn" id="nb-prog" onclick="switchTab('s-progress','nb-prog'); loadProgress()">
-        <span class="nav-art">📈</span><span class="nav-lbl">Progress</span>
+        <svg class="nav-art" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+        </svg>
+        <span class="nav-lbl">Progress</span>
       </button>
       <button class="nav-btn" id="nb-prof" onclick="switchTab('s-profile','nb-prof')">
-        <span class="nav-art">👤</span><span class="nav-lbl">Profile</span>
+        <svg class="nav-art" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+        </svg>
+        <span class="nav-lbl">Profile</span>
       </button>
     </div>
   </div>
@@ -666,35 +799,35 @@ const db   = firebase.firestore();
 ════════════════════════════════════════════════════════ */
 const MEALS = {
   breakfast: [
-    { e:"🥣", n:"Chiura with Dahi & Banana",     d:"1 cup beaten rice + 1 cup plain yogurt + 1 banana. Light, traditional, and filling.",         veg:true  },
-    { e:"🥚", n:"2 Roti + Boiled Egg + Tarkari",  d:"2 whole wheat rotis + 1 boiled egg + vegetable curry. High-protein morning start.",           veg:false },
-    { e:"🥣", n:"Oats with Milk & Fruit",          d:"1 cup oats + warm low-fat milk + seasonal fruit. Modern, effective, easy to prepare.",        veg:true  },
-    { e:"🫘", n:"Boiled Chana with Lemon",          d:"1 cup boiled chickpeas with lemon & salt. Excellent protein, keeps hunger away for hours.",   veg:true  },
-    { e:"🫓", n:"2 Roti with Dal & Sabji",          d:"2 whole wheat rotis + 1 bowl dal + mixed tarkari. Classic and nourishing.",                  veg:true  },
-    { e:"🥜", n:"2 Roti with Peanut Chutney",      d:"2 rotis + homemade peanut chutney. Healthy fats + fiber — very satisfying.",                 veg:true  },
+    { e:"🥣", n:"Chiura, Dahi ra Kera",            d:"1 cup piteko chiura + 1 cup sada dahi + 1 kera. Halka, paramparik ra trptikarak.",              veg:true  },
+    { e:"🥚", n:"2 Roti + Umaleko Phul + Tarkari", d:"2 atta roti + 1 umaleko phul + tarkari. Bihana ko ucha protein suru.",                          veg:false },
+    { e:"🌾", n:"Oats ra Dudh",                     d:"1 cup oats + thanda dudh + mausami phalaphul. Aadhunik, sasto ra tayar garna sahaj.",            veg:true  },
+    { e:"🫘", n:"Umaleko Kalo Chana",               d:"1 cup umaleko kalo chana + limon + nun. Dherai protein, ghanta sammako bhok.",                  veg:true  },
+    { e:"🫓", n:"2 Roti ra Maas ko Dal",            d:"2 atta roti + 1 bowl maas ko dal + tarkari. Klasik ra paushtik.",                               veg:true  },
+    { e:"🥜", n:"2 Roti ra Badam ko Chutney",       d:"2 roti + ghar ko badam chutney. Swasth fat + fiber — dherai trptikarak.",                       veg:true  },
   ],
   lunch: [
-    { e:"🍛", n:"Dal Bhat (Half Rice Portion)",    d:"Half plate rice + full bowl dal + 1 cup tarkari + cucumber salad. Eat dal first, then rice.", veg:true  },
-    { e:"🍽️", n:"2 Roti + Dal + Tarkari",          d:"2 rotis + dal + vegetable curry. Skip rice at lunch — feel lighter all afternoon.",          veg:true  },
-    { e:"🍱", n:"Brown Rice Dal Bhat",              d:"Half plate brown rice + full bowl dal + tarkari. More fiber, slower digestion, less hunger.", veg:true  },
-    { e:"🍗", n:"Chicken Tarkari + 2 Roti",        d:"2 rotis + lean chicken tarkari cooked with less oil. High protein, satisfying.",              veg:false },
-    { e:"🐟", n:"Fish Curry + Small Brown Rice",   d:"Small bowl brown rice + fish curry. Rich in omega-3, great for metabolism.",                  veg:false },
-    { e:"🥘", n:"Vegetable Khichdi",               d:"Rice & dal cooked together with vegetables. Easy to digest, full of nutrients.",              veg:true  },
+    { e:"🍛", n:"Dal Bhat (Aadha Bhat)",            d:"Aadha plate bhat + ek bowl dal + 1 cup tarkari + kakra salad. Pahile dal khao, pacchi bhat.",   veg:true  },
+    { e:"🍽️", n:"2 Roti + Dal + Tarkari",           d:"2 roti + dal + tarkari. Bihanko khanamaa bhat nakhao — dinharbhar halka mahsus huncha.",        veg:true  },
+    { e:"🍱", n:"Kodo ko Bhat ra Dal",              d:"Aadha plate kodo ko bhat + dal + tarkari. Dherai fiber, dhimai pachne, kam bhok.",               veg:true  },
+    { e:"🍗", n:"Kukhura ko Tarkari + 2 Roti",      d:"2 roti + thik oil ma pakaeko kukhura. Ucha protein, trptikarak.",                               veg:false },
+    { e:"🐟", n:"Macha ko Jhol + Aadha Bhat",       d:"Aadha bowl bhat + macha ko jhol. Omega-3 le bhari, metabolism ko lagi ramro.",                  veg:false },
+    { e:"🥘", n:"Tarkari Khichdi",                  d:"Bhat ra dal ko saath tarkari sanga pakayako. Pachna sajilo, paushtik tawa.",                    veg:true  },
   ],
   dinner: [
-    { e:"🫓", n:"2 Roti + Light Sabji",            d:"2 rotis + lightly cooked vegetable curry. Keep dinner light — this is the golden rule.",     veg:true  },
-    { e:"🍲", n:"Dal Soup + 1 Roti",               d:"1 bowl thin dal soup + 1 roti. Light on digestion, warm and comforting.",                   veg:true  },
-    { e:"🥘", n:"Vegetable Khichdi",               d:"Light rice-dal porridge with vegetables. Perfect light dinner for weight loss.",              veg:true  },
-    { e:"🥣", n:"Chiura + Dahi (Small Portion)",   d:"Half cup chiura + 1 cup plain dahi. Very light, excellent for overnight digestion.",         veg:true  },
-    { e:"🍳", n:"Egg Bhurji + 1 Roti",            d:"Scrambled eggs with vegetables + 1 roti. Light protein dinner.",                             veg:false },
-    { e:"🥣", n:"Vegetable Soup + 1 Roti",         d:"Homemade vegetable soup + 1 roti. Very light — directly supports weight loss.",              veg:true  },
+    { e:"🫓", n:"2 Roti + Halka Tarkari",           d:"2 roti + halka pakayako tarkari. Beli ko khaana halka raakha — yo sunaulaun niyam ho.",         veg:true  },
+    { e:"🍲", n:"Dal ko Jhol + 1 Roti",             d:"1 bowl patlo dal + 1 roti. Pachna sahaj, tata ra aaram daayak.",                                veg:true  },
+    { e:"🥘", n:"Tarkari Khichdi",                  d:"Halka bhat-dal-tarkari ko khichdi. Tauliya ghatauna perfect beli ko khaana.",                   veg:true  },
+    { e:"🥣", n:"Chiura ra Dahi (Sano)",            d:"Aadha cup chiura + 1 cup sada dahi. Dherai halka, raatri pachna sanjau.",                       veg:true  },
+    { e:"🍳", n:"Anda Bhurji + 1 Roti",             d:"Tarkari sanga phiteko anda + 1 roti. Halka protein beli ko khaana.",                            veg:false },
+    { e:"🥣", n:"Tarkari Soup + 1 Roti",            d:"Ghar ko tarkari soup + 1 roti. Dherai halka — seedha tauliya ghataaucha.",                      veg:true  },
   ],
   snack: [
-    { e:"🫘", n:"Roasted Chana",                   d:"Small handful of bhuteko chana. High protein — kills hunger between meals.",                  veg:true  },
-    { e:"🍎", n:"Seasonal Fruit",                   d:"1 medium fruit — apple, guava, pear, or orange. Natural sugar only.",                        veg:true  },
-    { e:"🥛", n:"Plain Dahi",                       d:"1 cup plain yogurt, no sugar. Probiotic, filling, very low calorie.",                        veg:true  },
-    { e:"🥜", n:"10–12 Almonds or Walnuts",        d:"Healthy fats and protein. Keeps metabolism active between meals.",                            veg:true  },
-    { e:"🥒", n:"Cucumber with Lemon & Salt",      d:"Sliced cucumber — zero guilt, fills you up, excellent hydration.",                            veg:true  },
+    { e:"🫘", n:"Bhutet Chana",                      d:"Sano mutthi bhutet chana. Ucha protein — khaana bichaako bhok mardai.",                        veg:true  },
+    { e:"🍎", n:"Mausami Phalaphul",                  d:"1 aakar ko phalafahul — syaau, amba, naspati wa suntala. Natural sugar matra.",                 veg:true  },
+    { e:"🥛", n:"Sada Dahi",                          d:"1 cup sada dahi, chini naraakhi. Probiotic, trptikarak, dherai kam calories.",                 veg:true  },
+    { e:"🥜", n:"10-12 Badam wa Akhrot",              d:"Swasth fat ra protein. Khaana bichaako metabolism active raakha.",                             veg:true  },
+    { e:"🥒", n:"Kakra ra Limon",                     d:"Kakra slice — zero guilt, pet bharaucha, dherai ramro hydration.",                             veg:true  },
   ]
 };
 
@@ -1085,7 +1218,7 @@ function loadDash() {
 
   // Greeting
   const h = new Date().getHours();
-  document.getElementById("d-greet").textContent = h < 12 ? "Good morning 🌸" : h < 17 ? "Good afternoon ☀️" : "Good evening 🌙";
+  document.getElementById("d-greet").textContent = h < 12 ? "Subha prabhat / Good morning 🌸" : h < 17 ? "Subha diu / Good afternoon ☀️" : "Shubha sandha / Good evening 🌙";
   document.getElementById("d-name").textContent  = (PROFILE.name || "She") + "! 💪";
 
   // Stats
@@ -1104,10 +1237,16 @@ function loadDash() {
   // Meals
   const meals = { breakfast: pickMeal("breakfast", PROFILE), lunch: pickMeal("lunch", PROFILE), dinner: pickMeal("dinner", PROFILE), snack: pickMeal("snack", PROFILE) };
   document.getElementById("d-meals").innerHTML =
-    mealCard("🌅 Breakfast", meals.breakfast) +
-    mealCard("☀️ Lunch",     meals.lunch)     +
-    mealCard("🌙 Dinner",    meals.dinner)    +
-    mealCard("🍎 Snack",     meals.snack);
+    mealCard("🌅 Breakfast", meals.breakfast, "breakfast") +
+    mealCard("☀️ Lunch",     meals.lunch,     "lunch")     +
+    mealCard("🌙 Dinner",    meals.dinner,    "dinner")    +
+    mealCard("🍎 Snack",     meals.snack,     "snack");
+
+  // Render water tracker
+  renderWaterTracker();
+
+  // Schedule in-app notifications
+  scheduleNotifications();
 
   // Tip
   const tip = dailyTip(PROFILE);
@@ -1121,11 +1260,21 @@ function loadDash() {
   fillProfileScreen();
 }
 
-function mealCard(timeLabel, m) {
-  return `<div class="meal-card">
+const MEAL_TIME_ICONS = {
+  breakfast: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`,
+  lunch:     `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/></svg>`,
+  dinner:    `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>`,
+  snack:     `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72m2.54-15.38c-3.72 4.35-8.94 5.66-16.88 5.85m19.5 1.9c-3.5-.93-6.63-.82-8.94 0-2.58.92-5.01 2.86-7.44 6.32"/></svg>`,
+};
+
+function mealCard(timeLabel, m, mealKey) {
+  const icon = MEAL_TIME_ICONS[mealKey] || '';
+  const colors = { breakfast:'#FF8C61', lunch:'#F6C90E', dinner:'#7B5EA7', snack:'#E91E80' };
+  const c = colors[mealKey] || 'var(--pink)';
+  return `<div class="meal-card meal-card-notif">
     <div class="meal-art">${m.e}</div>
     <div style="flex:1">
-      <div class="meal-time">${timeLabel}</div>
+      <div class="meal-time" style="color:${c};display:flex;align-items:center;gap:4px;"><span style="color:${c}">${icon}</span> ${timeLabel.replace(/^.+? /,'')}</div>
       <div class="meal-name">${m.n}</div>
       <div class="meal-desc">${m.d}</div>
     </div>
@@ -1331,8 +1480,147 @@ function mkLineChart(ctx, labels, data, color, fill) {
 }
 
 /* ════════════════════════════════════════════════════════
-   UTILS
+   💧 WATER TRACKER
 ════════════════════════════════════════════════════════ */
+function renderWaterTracker() {
+  const key = 'sh_water_' + todayStr();
+  let count = parseInt(localStorage.getItem(key) || '0');
+  const wrap = document.getElementById('water-tracker');
+  if (!wrap) return;
+  let html = '';
+  for (let i = 1; i <= 8; i++) {
+    html += `<svg class="water-drop ${i <= count ? 'filled' : ''}" data-i="${i}" viewBox="0 0 40 50" onclick="toggleWater(${i})" xmlns="http://www.w3.org/2000/svg">
+      <path d="M20 3C12 15 6 23 6 31a14 14 0 0028 0C34 23 28 15 20 3z" fill="${i <= count ? '#2196F3' : '#B0D4F1'}" stroke="${i <= count ? '#1565C0' : '#90B8D8'}" stroke-width="1.5"/>
+      ${i <= count ? '<path d="M13 34 Q14 28 18 26" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round" fill="none"/>' : ''}
+    </svg>`;
+  }
+  wrap.innerHTML = html;
+  const sub = document.querySelector('.water-sub');
+  if (sub) sub.textContent = count >= 8 ? '🎉 Aaj ko paani laksya pura! / Daily water goal done!' : `${count}/8 glass piyo — ${8-count} baki chha`;
+}
+
+function toggleWater(i) {
+  const key = 'sh_water_' + todayStr();
+  let count = parseInt(localStorage.getItem(key) || '0');
+  count = (i <= count) ? i - 1 : i;
+  localStorage.setItem(key, count);
+  renderWaterTracker();
+  if (count === 8) {
+    showNotif({
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="#2196F3" stroke-width="2.5" stroke-linecap="round"><path d="M12 2C6 9 4 13.5 4 16a8 8 0 0016 0c0-2.5-2-7-8-14z"/></svg>`,
+      title: "Paani laksya pura! 💙",
+      msg: "Water goal complete! / Aaj ko 8 glass piyo — shaabaash!",
+      actions: []
+    });
+  }
+}
+
+/* ════════════════════════════════════════════════════════
+   🔔 NOTIFICATION SYSTEM (in-app scheduled + bilingual)
+════════════════════════════════════════════════════════ */
+const NOTIF_SCHEDULES = [
+  { h:7,  m:30, type:"meal",  meal:"breakfast", title:"Bihana ko khaana ko samay! 🌅", titleEn:"Breakfast Time!", msg:"Chiura-dahi, roti ra tarkari — bihana ko paushtik suru garau. / Start your morning with a nourishing Nepali breakfast.", q:"Khanubhayo? / Did you eat?", },
+  { h:9,  m:0,  type:"water", title:"Paani piunu na! 💧", titleEn:"Time to Hydrate!", msg:"Paani piyera metabolism active raakhu. / Keep your metabolism active with water.", },
+  { h:12, m:30, type:"meal",  meal:"lunch", title:"Diuso ko khaana ko samay! ☀️", titleEn:"Lunch Time!", msg:"Dal bhat wa roti tarkari — diuso ko energy bharpu. / Refuel your afternoon with a balanced Nepali meal.", q:"Khanubhayo? / Did you eat?", },
+  { h:15, m:0,  type:"water", title:"Paani piunu na! 💧", titleEn:"Afternoon Hydration!", msg:"Bihanai dekhi kati piyo? Alik paani piyo. / How much have you had? Take a water break.", },
+  { h:16, m:0,  type:"meal",  meal:"snack", title:"Khaja ko samay! 🍎", titleEn:"Snack Time!", msg:"Chana wa phalaphul — beli ko khaana agadi bhok niyantran. / Control pre-dinner hunger with a healthy snack.", q:"Khajama ke khanu bhayo? / What did you snack on?", },
+  { h:19, m:30, type:"meal",  meal:"dinner", title:"Beli ko khaana! 🌙", titleEn:"Dinner Time!", msg:"Beli halka khaau — roti ra tarkari ya dal. / Keep dinner light — roti or khichdi works best.", q:"Khanubhayo? / Did you eat?", },
+  { h:21, m:0,  type:"water", title:"Antim glass paani! 💧", titleEn:"Last Water Reminder!", msg:"Sutnu agadi ek glass paani piyo. / Drink one last glass before bedtime.", },
+];
+
+let notifTimers = [];
+
+function scheduleNotifications() {
+  // Clear old timers
+  notifTimers.forEach(t => clearTimeout(t));
+  notifTimers = [];
+
+  const now = new Date();
+  NOTIF_SCHEDULES.forEach(sched => {
+    const target = new Date();
+    target.setHours(sched.h, sched.m, 0, 0);
+    let delay = target - now;
+    if (delay < 0) delay += 86400000; // next day
+    if (delay > 86400000) return; // only schedule for today
+
+    const t = setTimeout(() => {
+      if (sched.type === 'water') {
+        const count = parseInt(localStorage.getItem('sh_water_' + todayStr()) || '0');
+        if (count >= 8) return; // already done
+        showNotif({
+          icon: `<svg viewBox="0 0 24 24" fill="none" stroke="#2196F3" stroke-width="2.5" stroke-linecap="round"><path d="M12 2C6 9 4 13.5 4 16a8 8 0 0016 0c0-2.5-2-7-8-14z"/></svg>`,
+          title: sched.title,
+          msg: sched.msg,
+          actions: [{ label:'Piyo! / Done!', fn:'markWater()' }]
+        });
+      } else {
+        showNotif({
+          icon: `<svg viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>`,
+          title: sched.title,
+          msg: sched.msg,
+          actions: [
+            { label:'Khanchu / Yes!', fn:`logMealConfirm('${sched.meal}')` },
+            { label:'Pachi / Later', fn:'closeNotif()' }
+          ]
+        });
+      }
+    }, delay);
+    notifTimers.push(t);
+  });
+}
+
+function showNotif({ icon, title, msg, actions }) {
+  const banner = document.getElementById('notif-banner');
+  document.getElementById('notif-icon').innerHTML = icon;
+  document.getElementById('notif-title').textContent = title;
+  document.getElementById('notif-msg').textContent = msg;
+  const actEl = document.getElementById('notif-actions');
+  actEl.innerHTML = actions.map(a =>
+    `<button class="notif-yes" onclick="${a.fn}">${a.label}</button>`
+  ).join('') + (actions.length ? `<button class="notif-no" onclick="closeNotif()">Baad maa / Later</button>` : '');
+  banner.classList.add('visible');
+  setTimeout(() => banner.classList.remove('visible'), 12000);
+}
+
+function closeNotif() {
+  document.getElementById('notif-banner').classList.remove('visible');
+}
+
+function markWater() {
+  const key = 'sh_water_' + todayStr();
+  let count = Math.min(8, parseInt(localStorage.getItem(key) || '0') + 1);
+  localStorage.setItem(key, count);
+  renderWaterTracker();
+  closeNotif();
+  toast(`Glass ${count}/8 piyo! 💧`);
+}
+
+function logMealConfirm(meal) {
+  closeNotif();
+  toast(`${meal.charAt(0).toUpperCase() + meal.slice(1)} logged! Ramro kaam! 🌸`);
+  show('s-meal');
+  const chip = document.querySelector(`#meal-chips .chip[data-v="${meal}"]`);
+  if (chip) { document.querySelectorAll('#meal-chips .chip').forEach(c=>c.classList.remove('selected')); chip.classList.add('selected'); }
+}
+
+function testNotification() {
+  const notifs = [
+    {
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="#2196F3" stroke-width="2.5" stroke-linecap="round"><path d="M12 2C6 9 4 13.5 4 16a8 8 0 0016 0c0-2.5-2-7-8-14z"/></svg>`,
+      title: "Paani piunu na! 💧",
+      msg: "Aaj kati glass piyo? / How many glasses today? Thik chhaina — piu na!",
+      actions: [{ label:'Piyo! / Done!', fn:'markWater()' }]
+    },
+    {
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>`,
+      title: "Khaana ko samay! 🌸",
+      msg: "Diuso ko khaana bhayo? Dal bhat wa roti tarkari khao. / Lunch time! Have your Nepali meal.",
+      actions: [{ label:'Khanchu!', fn:"logMealConfirm('lunch')" }, { label:'Pachi / Later', fn:'closeNotif()' }]
+    }
+  ];
+  showNotif(notifs[Math.floor(Math.random() * notifs.length)]);
+}
+
 function todayStr() { return new Date().toISOString().split("T")[0]; }
 function fmtDate(s) { const d = new Date(s); return `${d.getDate()}/${d.getMonth()+1}`; }
 
