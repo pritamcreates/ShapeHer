@@ -78,17 +78,7 @@
     .auth-logo span { color: var(--pink-light); }
     .auth-headline { font-size: 22px; font-weight: 700; color: var(--text); text-align: center; margin-top: 24px; }
     .auth-sub { font-size: 13px; color: var(--soft); text-align: center; line-height: 1.7; margin: 8px 0 36px; }
-    .btn-google {
-      width: 100%; padding: 17px 20px;
-      background: #fff; border: 2px solid var(--border);
-      border-radius: 18px; font-family: 'Poppins', sans-serif;
-      font-size: 15px; font-weight: 600; color: var(--text);
-      cursor: pointer; display: flex; align-items: center;
-      justify-content: center; gap: 12px;
-      box-shadow: 0 4px 16px rgba(196,75,155,0.12);
-      transition: transform .15s, box-shadow .15s;
-    }
-    .btn-google:active { transform: scale(.97); box-shadow: none; }
+    /* auth tabs + inputs already inline-styled */
     .auth-note { font-size: 11px; color: var(--soft); text-align: center; margin-top: 18px; line-height: 1.6; }
 
     /* ══════════════════════════════════════════
@@ -426,16 +416,29 @@
     <div class="auth-logo">Shape<span>Her</span></div>
     <div class="auth-headline">Welcome, beautiful 🌸</div>
     <div class="auth-sub">Your personalized Nepali diet plan — built around your real life, not a ChatGPT PDF.</div>
-    <button class="btn-google" onclick="signInGoogle()">
-      <svg width="20" height="20" viewBox="0 0 24 24">
-        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-      </svg>
-      Continue with Google
-    </button>
-    <div class="auth-note">Free forever. No hidden charges.<br/>Your data is private and secure.</div>
+
+    <!-- Tab toggle -->
+    <div id="auth-tabs" style="display:flex;gap:0;width:100%;margin-bottom:20px;border:2px solid var(--border);border-radius:14px;overflow:hidden;">
+      <button id="tab-new" onclick="authTab('new')" style="flex:1;padding:12px;background:var(--grad);color:#fff;border:none;font-family:'Poppins',sans-serif;font-size:14px;font-weight:700;cursor:pointer;">New User</button>
+      <button id="tab-existing" onclick="authTab('existing')" style="flex:1;padding:12px;background:transparent;color:var(--soft);border:none;font-family:'Poppins',sans-serif;font-size:14px;font-weight:600;cursor:pointer;">Returning User</button>
+    </div>
+
+    <!-- New user panel -->
+    <div id="auth-new" style="width:100%;">
+      <input class="field" id="auth-name-new" type="text" placeholder="Your name (e.g. Sita)" style="margin-bottom:12px;" />
+      <input class="field" id="auth-pin-new" type="password" inputmode="numeric" maxlength="4" placeholder="Create a 4-digit PIN" style="margin-bottom:12px;" />
+      <input class="field" id="auth-pin-confirm" type="password" inputmode="numeric" maxlength="4" placeholder="Confirm PIN" style="margin-bottom:16px;" />
+      <button class="btn-next" style="width:100%;height:52px;border-radius:14px;" onclick="signUpLocal()">Get Started 🌸</button>
+    </div>
+
+    <!-- Existing user panel -->
+    <div id="auth-existing" style="width:100%;display:none;">
+      <input class="field" id="auth-name-ex" type="text" placeholder="Your name" style="margin-bottom:12px;" />
+      <input class="field" id="auth-pin-ex" type="password" inputmode="numeric" maxlength="4" placeholder="Your 4-digit PIN" style="margin-bottom:16px;" />
+      <button class="btn-next" style="width:100%;height:52px;border-radius:14px;" onclick="signInLocal()">Continue →</button>
+    </div>
+
+    <div class="auth-note">Free forever. No account or email needed.<br/>Your data stays on this device &amp; our secure server.</div>
   </div>
 
   <!-- ═══════════ ONBOARDING ═══════════ -->
@@ -638,7 +641,6 @@
      FIREBASE + CHART.JS
 ───────────────────────────────────────── -->
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
@@ -657,7 +659,6 @@ const firebaseConfig = {
   measurementId:     "G-Y9JSN2FECK"
 };
 firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
 const db   = firebase.firestore();
 
 /* ════════════════════════════════════════════════════════
@@ -862,21 +863,62 @@ function switchTab(screenId, btnId) {
 }
 
 /* ════════════════════════════════════════════════════════
-   AUTH
+   AUTH — Local PIN (no Google, no email)
+   User ID is stored in localStorage; PIN is hashed simply.
 ════════════════════════════════════════════════════════ */
-async function signInGoogle() {
-  loader(true);
-  try {
-    const prov = new firebase.auth.GoogleAuthProvider();
-    await auth.signInWithRedirect(prov);
-  } catch (err) {
-    console.error(err);
-    toast("Sign-in failed. Please try again.");
-    loader(false);
-  }
+function authTab(tab) {
+  const isNew = tab === "new";
+  document.getElementById("auth-new").style.display      = isNew ? "block" : "none";
+  document.getElementById("auth-existing").style.display = isNew ? "none"  : "block";
+  document.getElementById("tab-new").style.background      = isNew ? "var(--grad)" : "transparent";
+  document.getElementById("tab-new").style.color           = isNew ? "#fff" : "var(--soft)";
+  document.getElementById("tab-existing").style.background = isNew ? "transparent" : "var(--grad)";
+  document.getElementById("tab-existing").style.color      = isNew ? "var(--soft)" : "#fff";
 }
 
-// Handle redirect result on page load
+function simpleHash(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) { h = (Math.imul(31, h) + str.charCodeAt(i)) | 0; }
+  return Math.abs(h).toString(36);
+}
+
+function makeUserId(name, pin) {
+  // deterministic uid from name + pin so returning users always get same uid
+  return "local_" + simpleHash(name.toLowerCase().trim() + "|" + pin);
+}
+
+async function signUpLocal() {
+  const name    = document.getElementById("auth-name-new").value.trim();
+  const pin     = document.getElementById("auth-pin-new").value.trim();
+  const confirm = document.getElementById("auth-pin-confirm").value.trim();
+  if (!name)              { toast("Please enter your name 🌸"); return; }
+  if (pin.length !== 4 || !/^\d{4}$/.test(pin)) { toast("PIN must be exactly 4 digits."); return; }
+  if (pin !== confirm)    { toast("PINs don't match — try again."); return; }
+  const uid = makeUserId(name, pin);
+  localStorage.setItem("sh_uid",  uid);
+  localStorage.setItem("sh_name", name);
+  CU = { uid, displayName: name };
+  await handleUser(CU);
+}
+
+async function signInLocal() {
+  const name = document.getElementById("auth-name-ex").value.trim();
+  const pin  = document.getElementById("auth-pin-ex").value.trim();
+  if (!name) { toast("Please enter your name 🌸"); return; }
+  if (!pin)  { toast("Please enter your PIN."); return; }
+  const uid = makeUserId(name, pin);
+  // Verify: check if a Firestore doc exists for this uid
+  loader(true);
+  try {
+    const doc = await db.collection("users").doc(uid).get();
+    if (!doc.exists) { toast("Name or PIN not found. Check and try again."); loader(false); return; }
+    localStorage.setItem("sh_uid",  uid);
+    localStorage.setItem("sh_name", name);
+    CU = { uid, displayName: name };
+    await handleUser(CU);
+  } catch (err) { console.error(err); toast("Login failed — check your connection."); loader(false); }
+}
+
 async function handleUser(user) {
   CU = user;
   const doc = await db.collection("users").doc(user.uid).get();
@@ -890,55 +932,22 @@ async function handleUser(user) {
 }
 
 async function doLogout() {
-  await auth.signOut();
+  localStorage.removeItem("sh_uid");
+  localStorage.removeItem("sh_name");
   CU = null; PROFILE = null; ANS = {};
   show("s-auth");
   document.getElementById("bottom-nav").style.display = "none";
 }
 
-// Capture redirect result IMMEDIATELY at script root — before any delay
-const redirectResultPromise = auth.getRedirectResult()
-  .then(result => {
-    console.log("[ShapeHer] getRedirectResult →", result?.user?.email || "no redirect user");
-    return result;
-  })
-  .catch(err => {
-    console.error("[ShapeHer] getRedirectResult error:", err.code, err.message);
-    return null;
-  });
-
-// App initialisation — splash shows for 2s, auth check runs in parallel
+// App initialisation — splash shows for 2s, then restore session
 window.addEventListener("load", () => {
   setTimeout(async () => {
-    // Step 1: Did we just come back from a Google redirect?
-    const result = await redirectResultPromise;
-    if (result && result.user) {
-      console.log("[ShapeHer] ✅ Signed in via redirect:", result.user.email);
-      await handleUser(result.user);
-      return;
-    }
-
-    // Step 2: Already signed in from a previous session?
-    if (auth.currentUser) {
-      console.log("[ShapeHer] ✅ Existing session:", auth.currentUser.email);
-      await handleUser(auth.currentUser);
-      return;
-    }
-
-    // Step 3: Wait for Firebase to restore auth state (one-time, then unsubscribe)
-    console.log("[ShapeHer] Waiting for auth state...");
-    const authUser = await new Promise(resolve => {
-      const unsub = auth.onAuthStateChanged(user => {
-        unsub(); // fire once only
-        resolve(user);
-      });
-    });
-
-    if (authUser) {
-      console.log("[ShapeHer] ✅ Auth restored:", authUser.email);
-      await handleUser(authUser);
+    const uid  = localStorage.getItem("sh_uid");
+    const name = localStorage.getItem("sh_name");
+    if (uid && name) {
+      CU = { uid, displayName: name };
+      await handleUser(CU);
     } else {
-      console.log("[ShapeHer] No user — showing sign-in screen");
       show("s-auth");
     }
   }, 2000);
