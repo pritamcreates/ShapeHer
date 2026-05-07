@@ -31,13 +31,12 @@
       --sidebar-w:  260px;
     }
 
-    /* ── NE / EN typography ── */
     .lang-en { font-family:'Poppins',sans-serif; display:block; font-weight:700; }
     .lang-ne { font-family:'Noto Sans Devanagari',serif; display:block; font-size:0.78em; color:var(--soft); font-weight:500; margin-top:1px; }
     .label-en { font-family:'Poppins',sans-serif; }
     .label-ne { font-family:'Noto Sans Devanagari',serif; font-size:0.85em; color:var(--soft); margin-left:4px; }
 
-    /* ════════════════════════════ SPLASH ═══ */
+    /* ════ SPLASH ═══ */
     #s-splash {
       position:fixed; inset:0; background:var(--grad);
       display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
@@ -50,7 +49,7 @@
     @keyframes float { 0%,100%{transform:translateY(0) rotate(-3deg)} 50%{transform:translateY(-12px) rotate(3deg)} }
     .splash-flower { animation:float 2.8s ease-in-out infinite; }
 
-    /* ════════════════════════════ LAYOUT ═══ */
+    /* ════ LAYOUT ═══ */
     #app { display:flex; min-height:100vh; }
 
     /* Sidebar */
@@ -118,14 +117,25 @@
     }
     .notif-badge.show { display:block; }
 
+    /* Sign Out button in topbar */
+    .topbar-signout {
+      display:flex; align-items:center; gap:6px;
+      padding:8px 14px; border-radius:12px; border:1.5px solid #FFD6E7;
+      background:#fff; cursor:pointer; font-family:'Poppins',sans-serif;
+      font-size:12px; font-weight:700; color:#E91E63;
+      box-shadow:0 1px 8px rgba(196,75,155,.08);
+      transition:all .18s; white-space:nowrap;
+    }
+    .topbar-signout:hover { background:#FFF0F7; border-color:var(--pink); }
+
     /* Hamburger (mobile only) */
     #hamburger { display:none; }
 
-    /* ════════════════════════════ SCREENS ═══ */
+    /* ════ SCREENS ═══ */
     .screen { display:none; padding:24px 28px 40px; }
     .screen.active { display:block; }
 
-    /* AUTH screen override */
+    /* AUTH screen */
     #s-auth { margin-left:0; padding:0; }
     #s-auth.active { display:flex; min-height:100vh; }
     #auth-left {
@@ -175,7 +185,7 @@
     .btn-primary:active { opacity:.88; transform:scale(.99); }
     .auth-note { font-size:11px; color:var(--soft); text-align:center; margin-top:14px; max-width:380px; line-height:1.6; }
 
-    /* ════════════════════════════ ONBOARDING ═══ */
+    /* ════ ONBOARDING ═══ */
     #s-onboard { margin-left:0; background:var(--bg); }
     #s-onboard.active { display:flex; flex-direction:column; min-height:100vh; padding:0; }
     .ob-topbar { padding:20px 28px 14px; background:#fff; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:16px; }
@@ -224,7 +234,7 @@
       cursor:pointer; transition:opacity .15s;
     }
 
-    /* ════════════════════════════ PROCESSING ═══ */
+    /* ════ PROCESSING ═══ */
     #s-process { margin-left:0; }
     #s-process.active {
       display:flex; flex-direction:column; align-items:center; justify-content:center;
@@ -239,7 +249,7 @@
     .dot:nth-child(2){animation-delay:.2s} .dot:nth-child(3){animation-delay:.4s}
     @keyframes bob { 0%,80%,100%{transform:scale(.8);opacity:.5} 40%{transform:scale(1.2);opacity:1} }
 
-    /* ════════════════════════════ DASHBOARD ═══ */
+    /* ════ DASHBOARD ═══ */
     .page-header { margin-bottom:24px; }
     .page-header h1 { font-family:'Playfair Display',serif; font-size:28px; color:var(--text); }
     .page-header-ne { font-family:'Noto Sans Devanagari',serif; font-size:14px; color:var(--soft); display:block; margin-top:2px; }
@@ -380,9 +390,7 @@
     .period-lbl { font-size:12px; color:#AD1457; font-weight:600; margin-top:4px; }
     .period-lbl-ne { font-family:'Noto Sans Devanagari',serif; font-size:11px; color:#C2185B; }
     .period-phases { display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; }
-    .phase-pill {
-      padding:5px 12px; border-radius:50px; font-size:11px; font-weight:700;
-    }
+    .phase-pill { padding:5px 12px; border-radius:50px; font-size:11px; font-weight:700; }
     .phase-menstrual { background:#FFCDD2; color:#C62828; }
     .phase-follicular { background:#E1F5FE; color:#0277BD; }
     .phase-ovulation { background:#E8F5E9; color:#2E7D32; }
@@ -486,7 +494,7 @@
     .notif-no { padding:8px 14px; background:transparent; color:var(--soft); border:2px solid var(--border); border-radius:10px; font-family:'Poppins',sans-serif; font-size:12px; font-weight:600; cursor:pointer; }
     .notif-close { background:none; border:none; font-size:18px; color:var(--soft); cursor:pointer; flex-shrink:0; line-height:1; padding:4px; }
 
-    /* Log Meal / Weight modal */
+    /* Modals */
     .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.3); z-index:800; align-items:center; justify-content:center; backdrop-filter:blur(4px); }
     .modal-overlay.show { display:flex; }
     .modal {
@@ -532,7 +540,7 @@
     .spinner { width:46px; height:46px; border:4px solid rgba(196,75,155,.2); border-top-color:var(--pink); border-radius:50%; animation:spin .75s linear infinite; }
     @keyframes spin { to{transform:rotate(360deg)} }
 
-    /* ════════════════════════════ RESPONSIVE ═══ */
+    /* ════ RESPONSIVE ═══ */
     @media (max-width:1024px) {
       .kpi-grid { grid-template-columns:repeat(2,1fr); }
       .dash-grid.three { grid-template-columns:1fr 1fr; }
@@ -553,6 +561,8 @@
       .prog-stat-row { grid-template-columns:repeat(3,1fr); }
       .screen { padding:16px 16px 40px; }
       #topbar { padding:14px 16px; }
+      .topbar-signout span { display:none; }
+      .topbar-signout { padding:8px 10px; }
     }
     @media (max-width:480px) {
       .kpi-grid { grid-template-columns:1fr 1fr; }
@@ -685,6 +695,15 @@
         <button class="topbar-btn" onclick="testNotification()" title="Test Notification">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2.5" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
         </button>
+        <!-- Sign Out button -->
+        <button class="topbar-signout" onclick="doLogout()" title="Sign Out">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+          <span>Sign Out</span>
+        </button>
       </div>
     </div>
 
@@ -692,43 +711,29 @@
     <div id="s-auth" class="screen">
       <div id="auth-left">
         <svg width="90" height="90" viewBox="0 0 200 200" fill="none" style="margin-bottom:20px;position:relative;z-index:1;">
-          <!-- Cute girl SVG avatar -->
-          <!-- Hair -->
           <ellipse cx="100" cy="72" rx="38" ry="42" fill="#4A2C1A"/>
           <ellipse cx="100" cy="58" rx="30" ry="26" fill="#5D3A22"/>
-          <!-- Long hair sides -->
           <ellipse cx="68" cy="100" rx="12" ry="30" fill="#4A2C1A"/>
           <ellipse cx="132" cy="100" rx="12" ry="30" fill="#4A2C1A"/>
-          <!-- Face -->
           <ellipse cx="100" cy="90" rx="28" ry="30" fill="#FDEBD0"/>
-          <!-- Blush -->
           <ellipse cx="80" cy="100" rx="8" ry="5" fill="#F48FB1" opacity=".5"/>
           <ellipse cx="120" cy="100" rx="8" ry="5" fill="#F48FB1" opacity=".5"/>
-          <!-- Eyes -->
           <ellipse cx="90" cy="86" rx="5" ry="5.5" fill="#2D1B35"/>
           <ellipse cx="110" cy="86" rx="5" ry="5.5" fill="#2D1B35"/>
           <circle cx="92" cy="84" r="1.5" fill="#fff"/>
           <circle cx="112" cy="84" r="1.5" fill="#fff"/>
-          <!-- Lashes -->
           <line x1="86" y1="81" x2="84" y2="78" stroke="#2D1B35" stroke-width="1.5" stroke-linecap="round"/>
           <line x1="90" y1="80" x2="90" y2="77" stroke="#2D1B35" stroke-width="1.5" stroke-linecap="round"/>
           <line x1="94" y1="81" x2="96" y2="78" stroke="#2D1B35" stroke-width="1.5" stroke-linecap="round"/>
           <line x1="106" y1="81" x2="104" y2="78" stroke="#2D1B35" stroke-width="1.5" stroke-linecap="round"/>
           <line x1="110" y1="80" x2="110" y2="77" stroke="#2D1B35" stroke-width="1.5" stroke-linecap="round"/>
           <line x1="114" y1="81" x2="116" y2="78" stroke="#2D1B35" stroke-width="1.5" stroke-linecap="round"/>
-          <!-- Nose -->
           <ellipse cx="100" cy="96" rx="3" ry="2" fill="#E8A87C" opacity=".6"/>
-          <!-- Smile -->
           <path d="M92 104 Q100 111 108 104" stroke="#C44B9B" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-          <!-- Body / top -->
           <path d="M65 140 Q68 120 100 118 Q132 120 135 140 L135 200 L65 200Z" fill="#C44B9B"/>
-          <!-- Collar / necklace -->
           <path d="M88 120 Q100 128 112 120" stroke="#FF6B9D" stroke-width="2" stroke-linecap="round" fill="none"/>
-          <!-- Bindi -->
           <circle cx="100" cy="74" r="3" fill="#C44B9B"/>
-          <!-- Hair clip -->
           <ellipse cx="72" cy="72" rx="5" ry="3" fill="#FF6B9D" transform="rotate(-20 72 72)"/>
-          <!-- Earrings -->
           <circle cx="72" cy="98" r="4" fill="#FFD700"/>
           <circle cx="128" cy="98" r="4" fill="#FFD700"/>
           <circle cx="72" cy="104" r="2.5" fill="#FF6B9D"/>
@@ -789,7 +794,6 @@
 
     <!-- DASHBOARD -->
     <div id="s-dash" class="screen active">
-      <!-- Hero -->
       <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;">
         <div>
           <h1 id="d-hello">Good morning!</h1>
@@ -1177,7 +1181,6 @@
           <div class="prof-row">
             <div class="prof-row-l">
               <div class="prof-row-icon">
-                <!-- Ruler icon for height -->
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 6H3a2 2 0 00-2 2v8a2 2 0 002 2h18a2 2 0 002-2V8a2 2 0 00-2-2z"/><line x1="7" y1="10" x2="7" y2="14"/><line x1="11" y1="10" x2="11" y2="12"/><line x1="15" y1="10" x2="15" y2="14"/><line x1="19" y1="10" x2="19" y2="12"/></svg>
               </div>
               <div><div class="prof-row-lbl">Height <span class="prof-row-lbl-ne">उचाइ</span></div></div>
@@ -1269,10 +1272,10 @@
     <div>
       <span class="form-label">Meal Type · खानाको प्रकार</span>
       <div class="chip-wrap" id="meal-chips" style="margin-bottom:16px;">
-        <div class="chip selected" data-v="breakfast" onclick="pickChip(this,'meal-chips')">🌅 Breakfast · बिहान</div>
-        <div class="chip" data-v="lunch" onclick="pickChip(this,'meal-chips')">☀️ Lunch · दिउँसो</div>
-        <div class="chip" data-v="dinner" onclick="pickChip(this,'meal-chips')">🌙 Dinner · बेलुका</div>
-        <div class="chip" data-v="snack" onclick="pickChip(this,'meal-chips')">🍎 Snack · खाजा</div>
+        <div class="chip selected" data-v="breakfast" onclick="pickChip(this,'meal-chips')">🌅 Breakfast</div>
+        <div class="chip" data-v="lunch" onclick="pickChip(this,'meal-chips')">☀️ Lunch</div>
+        <div class="chip" data-v="dinner" onclick="pickChip(this,'meal-chips')">🌙 Dinner</div>
+        <div class="chip" data-v="snack" onclick="pickChip(this,'meal-chips')">🍎 Snack</div>
       </div>
       <span class="form-label">Notes (optional) · टिप्पणी</span>
       <textarea id="meal-notes" class="field" rows="2" placeholder="e.g. home cooked, less oil · घर बनाएको, कम तेल" style="resize:none;"></textarea>
@@ -1484,7 +1487,6 @@ function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   const el=document.getElementById(id);
   if(el){el.classList.add('active');}
-  // Show/hide main layout structure
   const mainScreens=SIDEBAR_SCREENS.has(id);
   document.getElementById('sidebar').style.display=mainScreens?'':'none';
   document.getElementById('main').style.marginLeft=(mainScreens&&window.innerWidth>768)?'var(--sidebar-w)':'0';
@@ -1558,11 +1560,24 @@ async function signInLocal(){
 }
 
 async function doLogout(){
-  localStorage.removeItem('sh_uid');localStorage.removeItem('sh_name');
-  CU=null;PROFILE=null;ANS={};
-  document.getElementById('sidebar').style.display='';
-  document.getElementById('topbar').style.display='';
+  // Clear local session
+  localStorage.removeItem('sh_uid');
+  localStorage.removeItem('sh_name');
+  CU=null; PROFILE=null; ANS={};
+  // Clear any notification timers
+  notifTimers.forEach(t=>clearTimeout(t));
+  notifTimers=[];
+  // Reset auth form fields
+  document.getElementById('auth-name-new').value='';
+  document.getElementById('auth-pin-new').value='';
+  document.getElementById('auth-pin-confirm').value='';
+  document.getElementById('auth-name-ex').value='';
+  document.getElementById('auth-pin-ex').value='';
+  // Hide sidebar/topbar and go to auth
+  document.getElementById('sidebar').style.display='none';
+  document.getElementById('topbar').style.display='none';
   showScreen('s-auth');
+  toast('Signed out successfully · साइन आउट भयो 🌸');
 }
 
 /* ═══════════════════ ONBOARDING ═══════════════════ */
@@ -1656,18 +1671,16 @@ function loadDash(){
   fillProfileScreen();
   updateStreak();
   scheduleNotifications();
-  requestNotifPermission(true); // silent check
+  requestNotifPermission(true);
 }
 
 function updateTopGreeting(){
   const h=new Date().getHours();
   const name=PROFILE?.name||'She';
   const greet=h<12?`Good morning, ${name}! 🌸`:h<17?`Good afternoon, ${name}! ☀️`:`Good evening, ${name}! 🌙`;
-  const greetNe=h<12?`शुभ प्रभात, ${name}!`:h<17?`शुभ दिउँसो, ${name}!`:`शुभ साँझ, ${name}!`;
   document.getElementById('top-greet').textContent=greet;
   document.getElementById('d-hello').textContent=h<12?'Good morning! ☀️':h<17?'Good afternoon! ☀️':'Good evening! 🌙';
   document.getElementById('d-hello-ne').textContent=h<12?'शुभ प्रभात!':h<17?'शुभ दिउँसो!':'शुभ साँझ!';
-  // Nepali date
   const now=new Date();
   document.getElementById('top-date').textContent=now.toLocaleDateString('ne-NP',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 }
@@ -1709,12 +1722,10 @@ function fillKPI(){
   const togoEl=document.getElementById('kpi-togo');
   togoEl.textContent=diff>0?`${diff} kg to go 💪`:'🎉 Goal reached!';
   togoEl.className='kpi-trend'+(diff>5?' warn':'');
-  // water
   const wc=parseInt(localStorage.getItem('sh_water_'+todayStr())||'0');
   document.getElementById('kpi-water').textContent=wc;
   document.getElementById('kpi-water-trend').textContent=wc>=8?'🎉 Goal complete!':wc>=4?'Good progress!':'Keep drinking!';
   document.getElementById('kpi-water-trend').style.color=wc>=8?'var(--green)':'var(--blue)';
-  // sleep
   const sl=localStorage.getItem('sh_sleep_'+todayStr());
   if(sl){const s=JSON.parse(sl);document.getElementById('kpi-sleep').textContent=s.hours;document.getElementById('kpi-sleep-trend').textContent=s.hours>=7?'Well rested ✓':s.hours>=5?'Fair':' Low — rest more';}
 }
@@ -1736,20 +1747,17 @@ function renderBMI(){
   else{cat='Obese · मोटोपन';col='#F44336';bg='#FFEBEE';}
   const catEl=document.getElementById('bmi-cat');
   catEl.textContent=cat;catEl.style.background=bg;catEl.style.color=col;
-  // Rotate needle: BMI 15=0°, 35=180°
   const angle=Math.min(180,Math.max(0,((bmi-15)/20)*180));
   document.getElementById('bmi-needle').setAttribute('transform',`rotate(${angle-90} 90 90)`);
 }
 
 function renderCalRing(){
   if(!PROFILE)return;
-  // Estimate TDEE
   const actMult={sedentary:1.2,light:1.375,moderate:1.55,active:1.725}[PROFILE.activityLevel]||1.375;
   const bmr=PROFILE.currentWeight&&PROFILE.height&&PROFILE.age?
     (10*PROFILE.currentWeight)+(6.25*PROFILE.height)-(5*PROFILE.age)-161:1500;
-  const target=Math.round(bmr*actMult*0.85); // 15% deficit
+  const target=Math.round(bmr*actMult*0.85);
   document.getElementById('cal-target').textContent=target;
-  // Today's consumed (from meals logged)
   const consumed=parseInt(localStorage.getItem('sh_cal_'+todayStr())||'0');
   document.getElementById('cal-num').textContent=consumed;
   document.getElementById('cal-remain-big').innerHTML=`${Math.max(0,target-consumed)} <span style="font-size:12px;color:var(--soft);font-weight:500;">kcal left</span>`;
@@ -1797,7 +1805,8 @@ function renderMealPlan(){
   if(!PROFILE)return;
   const meals=['breakfast','lunch','dinner','snack'];
   const colors={breakfast:'#FF8C61',lunch:'#F6C90E',dinner:'#7B5EA7',snack:'var(--pink)'};
-  const labels={breakfast:'Breakfast · बिहान',lunch:'Lunch · दिउँसो',dinner:'Dinner · बेलुका',snack:'Snack · खाजा'};
+  // English-only labels
+  const labels={breakfast:'Breakfast',lunch:'Lunch',dinner:'Dinner',snack:'Snack'};
   let html='';
   meals.forEach(cat=>{
     const m=pickMeal(cat,PROFILE);
@@ -1826,13 +1835,12 @@ function renderHabits(){
   let html='';
   habits.forEach(h=>{
     const done=h.check();
-    // Last 7 days dots
     let dots='';
     for(let d=6;d>=0;d--){
       const day=new Date();day.setDate(day.getDate()-d);
       const dk=day.toISOString().split('T')[0];
       const isToday=d===0;
-      const isDone=isToday?done:false; // simplified
+      const isDone=isToday?done:false;
       dots+=`<div class="habit-dot ${isDone?'done':isToday?'today-empty':''}" title="${dk}">${isDone?'✓':''}</div>`;
     }
     html+=`<div class="habit-row">
@@ -1886,7 +1894,6 @@ function saveMeasurements(){
     date:todayStr()
   };
   localStorage.setItem('sh_measure_'+todayStr(),JSON.stringify(m));
-  // Save to firestore
   if(CU)db.collection('users').doc(CU.uid).collection('measurements').doc(todayStr()).set({...m,ts:firebase.firestore.FieldValue.serverTimestamp()}).catch(e=>e);
   toast('Measurements saved! · नाप सेव भयो ✓');
 }
@@ -1898,9 +1905,7 @@ async function askAI(){
   const resultEl=document.getElementById('ai-result');
   resultEl.style.display='block';
   resultEl.innerHTML='<span class="ai-typing">Analyzing</span>';
-  
   const profileSummary=PROFILE?`User profile: ${PROFILE.name}, age ${PROFILE.age}, weight ${PROFILE.currentWeight}kg, goal ${PROFILE.goalWeight}kg, height ${PROFILE.height}cm, diet: ${PROFILE.dietType}, conditions: ${(PROFILE.conditions||[]).join(', ')||'none'}, activity: ${PROFILE.activityLevel}. Challenge: ${PROFILE.biggestChallenge}.`:'';
-  
   try{
     const response=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
@@ -1928,7 +1933,6 @@ function openWeightModal(){
 }
 function closeWeightModal(){document.getElementById('weight-modal').classList.remove('show');}
 
-// Close modals on overlay click
 document.getElementById('meal-modal').addEventListener('click',function(e){if(e.target===this)closeMealModal();});
 document.getElementById('weight-modal').addEventListener('click',function(e){if(e.target===this)closeWeightModal();});
 
@@ -1983,7 +1987,6 @@ async function saveMeal(){
     const note=document.getElementById('meal-notes').value.trim();
     const mealData={photoBase64:base64,mealType:type,notes:note,date:todayStr(),ts:firebase.firestore.FieldValue.serverTimestamp()};
     await db.collection('users').doc(CU.uid).collection('mealLogs').add(mealData);
-    // Update cal tracker (estimate)
     const curCal=parseInt(localStorage.getItem('sh_cal_'+todayStr())||'0');
     const addCal={breakfast:350,lunch:460,dinner:320,snack:110}[type]||350;
     localStorage.setItem('sh_cal_'+todayStr(),curCal+addCal);
@@ -2030,17 +2033,14 @@ async function loadWChart(){
 /* ═══════════════════ PROGRESS ═══════════════════ */
 async function loadProgress(){
   if(!CU)return;
-  // Weight chart
   const wSnap=await db.collection('users').doc(CU.uid).collection('weightLogs').orderBy('date','asc').limit(14).get();
   const wRows=[];wSnap.forEach(d=>wRows.push(d.data()));
   const ctx=document.getElementById('p-chart')?.getContext('2d');
   if(ctx){if(pChart)pChart.destroy();pChart=mkChart(ctx,wRows.map(r=>fmtDate(r.date)),wRows.map(r=>r.weight),'#FF6B9D','rgba(255,107,157,0.1)');}
-  // Stats
   const lost=PROFILE.currentWeight&&wRows.length?Math.max(0,(wRows[0]?.weight||0)-PROFILE.currentWeight).toFixed(1):0;
   document.getElementById('ps-logged').textContent=wRows.length;
   document.getElementById('ps-lost').textContent=lost+' kg';
   document.getElementById('ps-streak').textContent=PROFILE.streak||1;
-  // Meal history
   const mSnap=await db.collection('users').doc(CU.uid).collection('mealLogs').orderBy('ts','desc').limit(20).get();
   const emojis={breakfast:'🌅',lunch:'☀️',dinner:'🌙',snack:'🍎'};
   const mhEl=document.getElementById('meal-history');
@@ -2056,7 +2056,6 @@ async function loadProgress(){
     </div>
   </div>`;});
   mhEl.innerHTML=html;
-  // Measurement chart (last 7 days)
   const mCtx=document.getElementById('measure-chart')?.getContext('2d');
   if(mCtx){
     const mData=[];const mLabels=[];
@@ -2078,15 +2077,15 @@ function calcPeriod(){
   const cycleDay=(daysSinceStart%cycleLen)+1;
   const daysUntilNext=cycleLen-cycleDay;
   document.getElementById('period-days').textContent=daysUntilNext;
-  // Phase
-  let phase,phaseNe,phaseClass;
-  if(cycleDay<=duration){phase='Menstrual Phase';phaseNe='रजस्वला चरण';phaseClass='phase-menstrual';}
-  else if(cycleDay<=13){phase='Follicular Phase';phaseNe='फलिक्युलर चरण';phaseClass='phase-follicular';}
-  else if(cycleDay<=15){phase='Ovulation';phaseNe='अण्डोत्सर्ग';phaseClass='phase-ovulation';}
-  else{phase='Luteal Phase';phaseNe='लुटियल चरण';phaseClass='phase-luteal';}
+  let phase,phaseClass;
+  if(cycleDay<=duration){phase='Menstrual Phase';phaseClass='phase-menstrual';}
+  else if(cycleDay<=13){phase='Follicular Phase';phaseClass='phase-follicular';}
+  else if(cycleDay<=15){phase='Ovulation';phaseClass='phase-ovulation';}
+  else{phase='Luteal Phase';phaseClass='phase-luteal';}
+  const phaseNe={Menstrual:'रजस्वला चरण',Follicular:'फलिक्युलर चरण',Ovulation:'अण्डोत्सर्ग',Luteal:'लुटियल चरण'};
+  const pKey=phase.split(' ')[0];
   const pillsEl=document.getElementById('period-phase-pills');
-  pillsEl.innerHTML=`<div class="phase-pill ${phaseClass}">${phase} · ${phaseNe}</div><div style="font-size:11px;color:#880E4F;margin-top:4px;">Day ${cycleDay} of ${cycleLen} · चक्रको दिन ${cycleDay}</div>`;
-  // Insights
+  pillsEl.innerHTML=`<div class="phase-pill ${phaseClass}">${phase} · ${phaseNe[pKey]||''}</div><div style="font-size:11px;color:#880E4F;margin-top:4px;">Day ${cycleDay} of ${cycleLen} · चक्रको दिन ${cycleDay}</div>`;
   const insights={
     'Menstrual Phase':`<div style="font-size:13px;color:var(--soft);line-height:1.7;">🌸 Rest and nourish yourself.<br><span style="font-family:'Noto Sans Devanagari',serif;font-size:12px;">विश्राम गर्नुस् र पौष्टिक खाना खानुस्।</span><br>• Eat iron-rich foods (spinach, dal, kalo chana)<br>• Gentle walks are fine<br>• Avoid excessive exercise</div>`,
     'Follicular Phase':`<div style="font-size:13px;color:var(--soft);line-height:1.7;">⚡ Energy rising! Great for goals.<br><span style="font-family:'Noto Sans Devanagari',serif;font-size:12px;">ऊर्जा बढ्दैछ — लक्ष्यका लागि उत्कृष्ट समय!</span><br>• Focus on lean proteins<br>• Best time to start new habits<br>• Increase activity gradually</div>`,
@@ -2104,7 +2103,6 @@ function savePeriodLog(){
   toast('Period log saved! · महिनावारी लग सेव भयो 🌸');
 }
 
-// Load saved period data
 function loadPeriodSaved(){
   const saved=localStorage.getItem('sh_period');
   if(saved){
@@ -2150,7 +2148,6 @@ function renderSleepChart(){
   if(sleepChart)sleepChart.destroy();
   sleepChart=mkChart(ctx,labels,data,'var(--purple)','rgba(123,94,167,0.1)','Hours of Sleep');
 }
-// Init sleep chart
 setTimeout(renderSleepChart,500);
 
 /* ═══════════════════ PROFILE ═══════════════════ */
@@ -2229,14 +2226,12 @@ function scheduleNotifications(){
     if(delay<0)delay+=86400000;
     if(delay>86400000)return;
     const t=setTimeout(()=>{
-      // In-app banner always
       showNotif({
         icon:sched.meal?`<svg viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>`:`<svg viewBox="0 0 24 24" fill="none" stroke="#2196F3" stroke-width="2.5" stroke-linecap="round"><path d="M12 2C6 9 4 13.5 4 16a8 8 0 0016 0c0-2.5-2-7-8-14z"/></svg>`,
         title:sched.title,titlene:sched.titlene,
         msg:sched.msg,msgne:sched.msgne,
         actions:sched.meal?[{label:`Logged! · खाएँ!`,fn:`logMealNotif('${sched.meal}')`}]:[{label:`Done! · भयो!`,fn:'markWater()'}]
       });
-      // Push notification if permitted
       if(Notification.permission==='granted'){
         new Notification(`ShapeHer — ${sched.title}`,{body:`${sched.msg}\n${sched.msgne}`,icon:'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌸</text></svg>'});
       }
@@ -2267,7 +2262,7 @@ function markWater(){
 }
 
 function logMealNotif(meal){
-  const nameMap={breakfast:'Breakfast · बिहानको खाना',lunch:'Lunch · दिउँसोको खाना',dinner:'Dinner · बेलुकाको खाना',snack:'Snack · खाजा'};
+  const nameMap={breakfast:'Breakfast',lunch:'Lunch',dinner:'Dinner',snack:'Snack'};
   closeNotif();toast(`${nameMap[meal]||meal} noted! 🌸`);
   localStorage.setItem('sh_meal_'+todayStr(),'1');
   renderHabits();
@@ -2307,12 +2302,10 @@ window.addEventListener('load',()=>{
       }else{showScreen('s-auth');}
     },600);
   },2000);
-  // Initial screen hide
   document.getElementById('sidebar').style.display='none';
   document.getElementById('topbar').style.display='none';
 });
 
-// Responsive sidebar handling
 window.addEventListener('resize',()=>{
   if(window.innerWidth>768){
     document.getElementById('sidebar-overlay').classList.remove('show');
